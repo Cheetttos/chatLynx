@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "284710913286",
+    "project_id": "chatlynx-a3ff7",
+    "storage_bucket": "chatlynx-a3ff7.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:284710913286:android:9535e26ca6362faed40a87",
+        "android_client_info": {
+          "package_name": "com.example.chatlynx"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAEIjOqajMQXyX_UjTaMYvTFWIatkVqYrs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
