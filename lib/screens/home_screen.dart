@@ -83,6 +83,7 @@ class _HomeScreenState extends State<HomeScreen> {
               icon: const Icon(Icons.logout))
         ],
       ),
+      drawer: _buildLateralMenu(),
       body: _buildUI(),
       bottomNavigationBar: BottomNavigationBar(
         unselectedItemColor: Colors.white38,
