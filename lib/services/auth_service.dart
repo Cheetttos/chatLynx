@@ -19,9 +19,12 @@ class AuthService {
           email: email, password: password);
 
       if (credential.user != null) {
-        _user = credential.user;
-        return true;
+        if (credential.user!.emailVerified) {
+          _user = credential.user;
+          return true;
+        }
       }
+      return false;
     } catch (e) {
       print(e);
     }
@@ -34,6 +37,7 @@ class AuthService {
       final credential = await _firebaseAuth.createUserWithEmailAndPassword(
           email: email, password: password);
       if (credential.user != null) {
+        credential.user!.sendEmailVerification();
         _user = credential.user;
         return true;
       }

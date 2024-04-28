@@ -76,160 +76,163 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 
   Widget _headerText() {
- return Center( 
-    child: Text(
-      "Inicia Tu Cuenta Lince",
-      style: TextStyle(
-        fontSize: 20,
-        fontWeight: FontWeight.w800,
-        color: Colors.green,
+    return const Center(
+      child: Text(
+        "Inicia Tu Cuenta Lince",
+        style: TextStyle(
+          fontSize: 20,
+          fontWeight: FontWeight.w800,
+          color: Color.fromRGBO(17, 117, 51, 51),
+        ),
       ),
-    ),
- );
-}
+    );
+  }
 
   Widget _registerForm() {
- return Container(
-    height: MediaQuery.sizeOf(context).height * 0.60,
-    margin: EdgeInsets.symmetric(
-      vertical: MediaQuery.sizeOf(context).height * 0.05,
-    ),
-    decoration: BoxDecoration(
-      color: Colors.white,
-      borderRadius: BorderRadius.circular(15),
-      border: Border.all(
-        color: Colors.black,
-        width: 2,
+    return Container(
+      height: MediaQuery.sizeOf(context).height * 0.56,
+      margin: EdgeInsets.symmetric(
+        vertical: MediaQuery.sizeOf(context).height * 0.05,
       ),
-      boxShadow: [
-        BoxShadow(
-          color: Colors.black.withOpacity(0.1),
-          spreadRadius: 1,
-          blurRadius: 7,
-          offset: Offset(0, 3),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(15),
+        border: Border.all(
+          color: Colors.black,
+          width: 2,
         ),
-      ],
-    ),
-    child: Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Form(
-        key: _registerFormKey,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          mainAxisSize: MainAxisSize.max,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            _pfpSelectionField(),
-            CustomFormField(
-              hintText: "Nombre",
-              height: MediaQuery.sizeOf(context).height * 0.1,
-              validationRegExp: NAME_VALIDATION_REGEX,
-              onSaved: (value) {
-                setState(() {
-                 name = value;
-                });
-              },
-            ),
-            CustomFormField(
-              hintText: "Correo Electronico",
-              height: MediaQuery.sizeOf(context).height * 0.1,
-              validationRegExp: EMAIL_VALIDATION_REGEX,
-              onSaved: (value) {
-                setState(() {
-                 email = value;
-                });
-              },
-            ),
-            CustomFormField(
-              hintText: "Contraseña",
-              height: MediaQuery.sizeOf(context).height * 0.1,
-              validationRegExp: PASSWORD_VALIDATION_REGEX,
-              obscureText: true,
-              onSaved: (value) {
-                setState(() {
-                 password = value;
-                });
-              },
-            ),
-            _registerButton(),
-          ],
-        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            spreadRadius: 1,
+            blurRadius: 7,
+            offset: const Offset(0, 3),
+          ),
+        ],
       ),
-    ),
- );
-}
-
-  Widget _pfpSelectionField() {
- return Row(
-    mainAxisAlignment: MainAxisAlignment.center,
-    children: [
-      if (selectedImage != null)
-        Container(
-          width: MediaQuery.of(context).size.width * 0.2, // Reducido el tamaño de la imagen
-          height: MediaQuery.of(context).size.width * 0.2, // Reducido el tamaño de la imagen
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10), // Añade bordes redondeados
-            image: DecorationImage(
-              fit: BoxFit.cover,
-              image: FileImage(selectedImage!),
-            ),
+      child: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: Form(
+          key: _registerFormKey,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            mainAxisSize: MainAxisSize.max,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              _pfpSelectionField(),
+              CustomFormField(
+                hintText: "Nombre",
+                height: MediaQuery.sizeOf(context).height * 0.06,
+                validationRegExp: nameValidation,
+                onSaved: (value) {
+                  setState(() {
+                    name = value;
+                  });
+                },
+              ),
+              CustomFormField(
+                hintText: "Correo Electronico",
+                height: MediaQuery.sizeOf(context).height * 0.06,
+                validationRegExp: emailValidation,
+                onSaved: (value) {
+                  setState(() {
+                    email = value;
+                  });
+                },
+              ),
+              CustomFormField(
+                hintText: "Contraseña",
+                height: MediaQuery.sizeOf(context).height * 0.06,
+                validationRegExp: passValidation,
+                obscureText: true,
+                onSaved: (value) {
+                  setState(() {
+                    password = value;
+                  });
+                },
+              ),
+              _registerButton(),
+            ],
           ),
         ),
-      SizedBox(width: 20), // Espacio entre la imagen y el botón
-      FloatingActionButton.extended(
-        onPressed: () async {
-          File? file = await _mediaService.getImageFromGallery();
-          if (file != null) {
-            setState(() {
-              selectedImage = file;
-            });
-          }
-        },
-        backgroundColor: Colors.green,
-        label: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            GestureDetector(
-              onTap: () async {
-                File? file = await _mediaService.getImageFromGallery();
-                if (file != null) {
-                 setState(() {
-                    selectedImage = file;
-                 });
-                }
-              },
-              child: Row(
-                children: [
-                 Padding(
-                    padding: const EdgeInsets.only(right: 5.0),
-                    child: Icon(
-                      Icons.add_a_photo,
-                      color: Colors.white,
-                    ),
-                 ),
-                 Text(
-                    'Seleccionar',
-                    style: TextStyle(
-                      fontSize: 15,
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
-                 ),
-                ],
+      ),
+    );
+  }
+
+  Widget _pfpSelectionField() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        if (selectedImage != null)
+          Container(
+            width: MediaQuery.of(context).size.width *
+                0.2, // Reducido el tamaño de la imagen
+            height: MediaQuery.of(context).size.width *
+                0.2, // Reducido el tamaño de la imagen
+            decoration: BoxDecoration(
+              borderRadius:
+                  BorderRadius.circular(10), // Añade bordes redondeados
+              image: DecorationImage(
+                fit: BoxFit.cover,
+                image: FileImage(selectedImage!),
               ),
             ),
-          ],
+          ),
+        const SizedBox(width: 20), // Espacio entre la imagen y el botón
+        FloatingActionButton.extended(
+          onPressed: () async {
+            File? file = await _mediaService.getImageFromGallery();
+            if (file != null) {
+              setState(() {
+                selectedImage = file;
+              });
+            }
+          },
+          backgroundColor: const Color.fromRGBO(17, 117, 51, 51),
+          label: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              GestureDetector(
+                onTap: () async {
+                  File? file = await _mediaService.getImageFromGallery();
+                  if (file != null) {
+                    setState(() {
+                      selectedImage = file;
+                    });
+                  }
+                },
+                child: const Row(
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.only(right: 5.0),
+                      child: Icon(
+                        Icons.add_a_photo,
+                        color: Colors.white,
+                      ),
+                    ),
+                    Text(
+                      'Seleccionar',
+                      style: TextStyle(
+                        fontSize: 15,
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
-      ),
-    ],
- );
-}
+      ],
+    );
+  }
 
   Widget _registerButton() {
     return SizedBox(
       width: MediaQuery.sizeOf(context).width,
       child: MaterialButton(
-        color: Theme.of(context).colorScheme.primary,
+        color: const Color.fromRGBO(17, 117, 51, 51),
         onPressed: () async {
           setState(() {
             isLoading = true;
@@ -254,11 +257,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ),
                   );
                   _alertService.showToast(
-                    text: "Usuario Registrado Correctamente!",
+                    text: "Usuario Registrado Correctamente, verifica tu correo!",
                     icon: Icons.check,
                   );
                   _navigationService.goBack();
-                  _navigationService.pushReplacementNamed("/home");
+                  _navigationService.pushReplacementNamed("/login");
                 } else {
                   throw Exception("No fue posible subir la foto de usuario");
                 }
@@ -288,29 +291,32 @@ class _RegisterScreenState extends State<RegisterScreen> {
             color: Colors.white,
           ),
         ),
-        
       ),
     );
   }
 
   Widget _loginAccountLink() {
- return Column(
-    mainAxisAlignment: MainAxisAlignment.center,
-    children: [
-      const Text("¿Ya tienes una cuenta? "),
-      TextButton(
-        onPressed: () {
-          _navigationService.goBack();
-        },
-        child: Text(
-          "Iniciar Sesión",
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            color: Colors.green,
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Image(
+          image: const AssetImage("images/tecnm-login.png"),
+          height: MediaQuery.sizeOf(context).height * 0.13,
+        ),
+        const Text("¿Ya tienes una cuenta? "),
+        TextButton(
+          onPressed: () {
+            _navigationService.goBack();
+          },
+          child: const Text(
+            "Iniciar Sesión",
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              color: Color.fromRGBO(17, 117, 51, 51),
+            ),
           ),
         ),
-      ),
-    ],
- );
-}
+      ],
+    );
+  }
 }

@@ -6,7 +6,7 @@ import 'package:path/path.dart' as p;
 class StorageService {
   final FirebaseStorage _firebaseStorage = FirebaseStorage.instance;
 
-  StorageService() {}
+  StorageService();
 
   Future<String?> uploadUserPfp({
     required File file,
@@ -39,14 +39,14 @@ class StorageService {
   }
 
   Future<String?> getUserProfilePicUrl(String uid) async {
-  Reference profilePicRef = _firebaseStorage.ref('users/pfps/$uid.jpg');
+    Reference profilePicRef = _firebaseStorage.ref('users/pfps/$uid.jpg');
 
-  try {
-    String downloadUrl = await profilePicRef.getDownloadURL();
-    return downloadUrl;
-  } catch (e) {
-    // Manejar el caso cuando no hay imagen de perfil para el usuario
-    return null;
+    try {
+      String downloadUrl = await profilePicRef.getDownloadURL();
+      return downloadUrl;
+    } catch (e) {
+      // Manejar el caso cuando no hay imagen de perfil para el usuario
+      return null;
+    }
   }
-}
 }

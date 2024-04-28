@@ -36,7 +36,12 @@ class DatabaseService {
   }
 
   Future<void> createUserProfile({required UserProfile userProfile}) async {
-    await _usersCollection?.doc(userProfile.uid).set(userProfile);
+    try {
+      await _usersCollection?.doc(userProfile.uid).set(userProfile);
+    } catch (e) {
+      print('Error al crear el perfil de usuario: $e');
+      rethrow;
+    }
   }
 
   Stream<QuerySnapshot<UserProfile>> getUserProfiles() {

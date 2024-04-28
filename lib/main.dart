@@ -35,7 +35,7 @@ class MainApp extends StatelessWidget {
       builder: (context, value, child) {
         return MaterialApp(
           navigatorKey: _navigationService.navigatiorKey,
-          title: 'Flutter demo',
+          title: 'ChatLynx',
           theme: value
               ? ThemeData(
                   colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
@@ -43,11 +43,6 @@ class MainApp extends StatelessWidget {
                   textTheme: GoogleFonts.montserratTextTheme(),
                 )
               : ThemeData.dark(),
-          /*ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
-          useMaterial3: true,
-          textTheme: GoogleFonts.montserratTextTheme(),
-        ),*/
           initialRoute: _authService.user != null ? "/home" : "/login",
           routes: _navigationService.routes,
           debugShowCheckedModeBanner: false,
