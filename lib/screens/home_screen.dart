@@ -39,6 +39,32 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
+  //filtrar contactos de chats
+  final TextEditingController _searchController = TextEditingController();
+  List<Chat> filteredChats = [];
+  List<Chat> chats = [];
+
+  void filterChats(String query) {
+    List<Chat> dummySearchList = List<Chat>.from(chats);
+    if (query.isNotEmpty) {
+      dummySearchList.clear();
+      chats.forEach((chat) {
+        if (chat.participants!.any((participant) =>
+            participant.toLowerCase().contains(query.toLowerCase()))) {
+          dummySearchList.add(chat);
+        }
+      });
+      setState(() {
+        filteredChats = dummySearchList;
+      });
+      return;
+    } else {
+      setState(() {
+        filteredChats = List<Chat>.from(chats);
+      });
+    }
+  }
+
   @override
   void initState() {
     // TODO: implement initState
@@ -64,7 +90,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 bool result = await _authService.logout();
                 if (result) {
                   _alertService.showToast(
-                    text: "Cerrando Sesión",
+                    text: "Se ha cerrado la sesión",
                     icon: Icons.check,
                   );
                   _navigationService.pushReplacementNamed("/login");
@@ -74,10 +100,22 @@ class _HomeScreenState extends State<HomeScreen> {
               icon: const Icon(Icons.logout))
         ],
       ),
-      //drawer: _buildLateralMenu(),
-      body: //_buildUI(),
-          Column(
+      body: Column(
         children: [
+          TextField(
+            controller: _searchController,
+            decoration: InputDecoration(
+              labelText: "Buscar contacto",
+              prefixIcon: const Icon(Icons.search),
+              suffixIcon: IconButton(
+                icon: const Icon(Icons.clear),
+                onPressed: () => _searchController.clear(),
+              ),
+            ),
+            onChanged: (value) {
+              filterChats(value);
+            },
+          ),
           Expanded(
               child: IndexedStack(
             index: _selectedIndex,
@@ -87,7 +125,18 @@ class _HomeScreenState extends State<HomeScreen> {
               Container(),
               const ConfigScreen()
             ],
-          ))
+          )),
+          Container(
+            alignment: Alignment.bottomRight,
+            padding: const EdgeInsets.only(bottom: 20, right: 20),
+            child: FloatingActionButton.extended(
+              onPressed: () {},
+              backgroundColor: const Color.fromRGBO(17, 117, 51, 51),
+              label: const Text('Nuevo chat'),
+              icon: const Icon(Icons.chat),
+              foregroundColor: Colors.white,
+            ),
+          )
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
@@ -116,18 +165,6 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
-
-  /*Widget _buildUI() {
-    return SafeArea(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 15.0,
-          vertical: 20.0,
-        ),
-        child: _chatsList(),
-      ),
-    );
-  }*/
 
   Widget _chatsList() {
     return StreamBuilder(
@@ -169,37 +206,6 @@ class _HomeScreenState extends State<HomeScreen> {
       },
     );
   }
-
-/*  Widget _buildLateralMenu() {
-    return Drawer(
-      child: ListView(
-        children: [
-          UserAccountsDrawerHeader(
-            currentAccountPicture: _currentUserProfilePicUrl == null
-                ? const CircleAvatar(
-                    child: Icon(Icons.person),
-                  )
-                : CircleAvatar(
-                    backgroundImage: NetworkImage(_currentUserProfilePicUrl!),
-                  ),
-            accountName: Text(
-              currentUserName,
-              style: TextStyle(
-                color: Theme.of(context).scaffoldBackgroundColor,
-              ),
-            ),
-            accountEmail: Text(
-              _authService.user?.email ?? '',
-              style: TextStyle(
-                color: Theme.of(context).scaffoldBackgroundColor,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-*/
 
   Widget _buildChatTile(
       AsyncSnapshot<DocumentSnapshot<Chat>> chatSnapshot, UserProfile user) {
