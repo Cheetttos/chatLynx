@@ -22,6 +22,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final GetIt _getIt = GetIt.instance;
 
+  int _selectedIndex = 0;
   late AuthService _authService;
   late NavigationService _navigationService;
   late AlertService _alertService;
@@ -30,6 +31,22 @@ class _HomeScreenState extends State<HomeScreen> {
 
   String currentUserName = '';
   String? _currentUserProfilePicUrl;
+
+  final List<Widget> _widgets = <Widget>[
+    const Text('Chats'),
+    const Text('Grupos'),
+    const Text('Contactos'),
+    Container(
+      color: const Color.fromRGBO(17, 117, 51, 51),
+      child: const Text('Ajustes'),
+    )
+  ];
+
+  void _selectedOptionItemBottomNavigation(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
 
   @override
   void initState() {
@@ -49,7 +66,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Mensajes"),
+        title: const Text("ChatLynx"),
         actions: [
           IconButton(
               onPressed: () async {
@@ -66,8 +83,24 @@ class _HomeScreenState extends State<HomeScreen> {
               icon: const Icon(Icons.logout))
         ],
       ),
-      drawer: _buildLateralMenu(),
       body: _buildUI(),
+      bottomNavigationBar: BottomNavigationBar(
+        unselectedItemColor: Colors.white38,
+        fixedColor: Colors.white,
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+              icon: Icon(Icons.chat),
+              label: "Chats",
+              backgroundColor: Color.fromRGBO(17, 117, 51, 51)),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.group_rounded), label: "Grupos"),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.contacts_rounded), label: "Contactos"),
+          BottomNavigationBarItem(icon: Icon(Icons.settings), label: "Ajustes")
+        ],
+        currentIndex: _selectedIndex,
+        onTap: _selectedOptionItemBottomNavigation,
+      ),
     );
   }
 
