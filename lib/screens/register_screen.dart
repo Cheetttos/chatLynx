@@ -160,35 +160,68 @@ class _RegisterScreenState extends State<RegisterScreen> {
 }
 
   Widget _pfpSelectionField() {
- return InkWell(
-    onTap: () async {
-      File? file = await _mediaService.getImageFromGallery();
-      if (file != null) {
-        setState(() {
-          selectedImage = file;
-        });
-      }
-    },
-    child: Stack(
-      alignment: Alignment.center,
-      children: [
-        selectedImage != null
-            ? CircleAvatar(
-                radius: MediaQuery.of(context).size.width * 0.15,
-                backgroundImage: FileImage(selectedImage!),
-              )
-            : CircleAvatar(
-                radius: MediaQuery.of(context).size.width * 0.15,
-                backgroundColor: Colors.grey[200],
-                child: Icon(Icons.add_a_photo, size: 40, color: Colors.grey),
-              ),
-        Positioned(
-          bottom: 0,
-          right: 0,
-          child: Icon(Icons.edit, color: Colors.white),
+ return Row(
+    mainAxisAlignment: MainAxisAlignment.center,
+    children: [
+      if (selectedImage != null)
+        Container(
+          width: MediaQuery.of(context).size.width * 0.2, // Reducido el tamaño de la imagen
+          height: MediaQuery.of(context).size.width * 0.2, // Reducido el tamaño de la imagen
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10), // Añade bordes redondeados
+            image: DecorationImage(
+              fit: BoxFit.cover,
+              image: FileImage(selectedImage!),
+            ),
+          ),
         ),
-      ],
-    ),
+      SizedBox(width: 20), // Espacio entre la imagen y el botón
+      FloatingActionButton.extended(
+        onPressed: () async {
+          File? file = await _mediaService.getImageFromGallery();
+          if (file != null) {
+            setState(() {
+              selectedImage = file;
+            });
+          }
+        },
+        backgroundColor: Colors.green,
+        label: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            GestureDetector(
+              onTap: () async {
+                File? file = await _mediaService.getImageFromGallery();
+                if (file != null) {
+                 setState(() {
+                    selectedImage = file;
+                 });
+                }
+              },
+              child: Row(
+                children: [
+                 Padding(
+                    padding: const EdgeInsets.only(right: 5.0),
+                    child: Icon(
+                      Icons.add_a_photo,
+                      color: Colors.white,
+                    ),
+                 ),
+                 Text(
+                    'Seleccionar',
+                    style: TextStyle(
+                      fontSize: 15,
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                 ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    ],
  );
 }
 
