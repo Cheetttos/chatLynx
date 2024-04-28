@@ -1,6 +1,7 @@
 import 'package:chatlynx/modelos/chat.dart';
 import 'package:chatlynx/modelos/user_profile.dart';
 import 'package:chatlynx/screens/chat_screen.dart';
+import 'package:chatlynx/screens/config_screen.dart';
 import 'package:chatlynx/services/alert_service.dart';
 import 'package:chatlynx/services/auth_service.dart';
 import 'package:chatlynx/services/database_service.dart';
@@ -31,16 +32,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   String currentUserName = '';
   String? _currentUserProfilePicUrl;
-
-  final List<Widget> _widgets = <Widget>[
-    const Text('Chats'),
-    const Text('Grupos'),
-    const Text('Contactos'),
-    Container(
-      color: const Color.fromRGBO(17, 117, 51, 51),
-      child: const Text('Ajustes'),
-    )
-  ];
 
   void _selectedOptionItemBottomNavigation(int index) {
     setState(() {
@@ -83,21 +74,42 @@ class _HomeScreenState extends State<HomeScreen> {
               icon: const Icon(Icons.logout))
         ],
       ),
-      drawer: _buildLateralMenu(),
-      body: _buildUI(),
+      //drawer: _buildLateralMenu(),
+      body: //_buildUI(),
+          Column(
+        children: [
+          Expanded(
+              child: IndexedStack(
+            index: _selectedIndex,
+            children: [
+              _chatsList(),
+              Container(),
+              Container(),
+              const ConfigScreen()
+            ],
+          ))
+        ],
+      ),
       bottomNavigationBar: BottomNavigationBar(
         unselectedItemColor: Colors.white38,
-        fixedColor: Colors.white,
+        selectedItemColor: Colors.white,
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
               icon: Icon(Icons.chat),
               label: "Chats",
               backgroundColor: Color.fromRGBO(17, 117, 51, 51)),
           BottomNavigationBarItem(
-              icon: Icon(Icons.group_rounded), label: "Grupos"),
+              icon: Icon(Icons.group_rounded),
+              label: "Grupos",
+              backgroundColor: Color.fromRGBO(17, 117, 51, 51)),
           BottomNavigationBarItem(
-              icon: Icon(Icons.contacts_rounded), label: "Contactos"),
-          BottomNavigationBarItem(icon: Icon(Icons.settings), label: "Ajustes")
+              icon: Icon(Icons.contacts_rounded),
+              label: "Contactos",
+              backgroundColor: Color.fromRGBO(17, 117, 51, 51)),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.settings),
+              label: "Ajustes",
+              backgroundColor: Color.fromRGBO(17, 117, 51, 51))
         ],
         currentIndex: _selectedIndex,
         onTap: _selectedOptionItemBottomNavigation,
@@ -105,7 +117,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildUI() {
+  /*Widget _buildUI() {
     return SafeArea(
       child: Padding(
         padding: const EdgeInsets.symmetric(
@@ -115,7 +127,7 @@ class _HomeScreenState extends State<HomeScreen> {
         child: _chatsList(),
       ),
     );
-  }
+  }*/
 
   Widget _chatsList() {
     return StreamBuilder(
@@ -158,8 +170,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildLateralMenu() {
-    print(_currentUserProfilePicUrl);
+/*  Widget _buildLateralMenu() {
     return Drawer(
       child: ListView(
         children: [
@@ -184,30 +195,11 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
           ),
-          ListTile(
-            leading: const Icon(Icons.account_circle),
-            title: const Text('Perfil'),
-            trailing: const Icon(Icons.chevron_right),
-            onTap: () {},
-          ),
-          ListTile(
-            leading: const Icon(Icons.settings),
-            title: const Text('Configuración'),
-            trailing: const Icon(Icons.chevron_right),
-            onTap: () {
-              _navigationService.pushNamed("/config");
-            },
-          ),
-          ListTile(
-            leading: Icon(Icons.settings),
-            title: Text('Configuración'),
-            trailing: Icon(Icons.chevron_right),
-            onTap: () {},
-          ),
         ],
       ),
     );
   }
+*/
 
   Widget _buildChatTile(
       AsyncSnapshot<DocumentSnapshot<Chat>> chatSnapshot, UserProfile user) {
