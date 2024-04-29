@@ -8,6 +8,7 @@ import 'package:day_night_switcher/day_night_switcher.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 
+
 class ConfigScreen extends StatefulWidget {
   const ConfigScreen({super.key});
 
@@ -72,7 +73,7 @@ class _configScreenState extends State<ConfigScreen> {
 
   Widget _buildUserInfoWidget() {
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 16.0),
+      padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 8.0),
       decoration: BoxDecoration(
         border: Border(
           bottom: BorderSide(color: Colors.grey.shade400, width: 5),
@@ -87,11 +88,11 @@ class _configScreenState extends State<ConfigScreen> {
             children: [
               _currentUserProfilePicUrl == null
                   ? const CircleAvatar(
-                      minRadius: 60,
+                      minRadius: 45,
                       child: Icon(Icons.person),
                     )
                   : CircleAvatar(
-                      minRadius: 60,
+                      minRadius: 45,
                       backgroundImage: NetworkImage(_currentUserProfilePicUrl!),
                     ),
             ],
@@ -103,8 +104,9 @@ class _configScreenState extends State<ConfigScreen> {
             children: [
               Text(
                 currentUserName,
-                style: const TextStyle(fontSize: 25.0),
+                style: const TextStyle(fontSize: 20.0),
               ),
+
               Text(
                 _authService.user?.email ?? '',
                 style: const TextStyle(fontSize: 14.0, color: Colors.grey),
@@ -115,6 +117,7 @@ class _configScreenState extends State<ConfigScreen> {
       ),
     );
   }
+
 
   Future<void> _fetchCurrentUserName() async {
     String userName = await _databaseService.getCurrentUserName();

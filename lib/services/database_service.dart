@@ -144,4 +144,28 @@ class DatabaseService {
         .snapshots()
         .cast<DocumentSnapshot<Chat>>();
   }
+
+  Future<void> addContact(String userId, String contactId, String contactName, String contactNumber) async {
+ await FirebaseFirestore.instance.collection('users').doc(userId).collection('contacts').add({
+    'id': contactId,
+    'name': contactName,
+    'number': contactNumber,
+ });
+}
+
+Future<void> updateUserName(String? uid, String newName) async {
+ if (uid != null) {
+    await _usersCollection?.doc(uid).update({'name': newName});
+ }
+}
+
+Future<void> updateUserProfilePicUrl(String? uid, String newProfilePicUrl) async {
+ if (uid != null) {
+    await _usersCollection?.doc(uid).update({'profilePicUrl': newProfilePicUrl});
+ }
+}
+
+
+
+
 }

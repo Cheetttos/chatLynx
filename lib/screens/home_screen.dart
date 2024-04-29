@@ -126,6 +126,17 @@ class _HomeScreenState extends State<HomeScreen> {
               const ConfigScreen()
             ],
           )),
+           Container(
+            alignment: Alignment.bottomRight,
+            padding: const EdgeInsets.only(bottom: 21, right: 20),
+            child: FloatingActionButton.extended(
+              onPressed: _showAddContactDialog,
+              backgroundColor: const Color.fromRGBO(17, 117, 51, 51),
+              label: const Text('Contacto'),
+              icon: const Icon(Icons.add),
+              foregroundColor: Colors.white,
+            ),
+          ),
           Container(
             alignment: Alignment.bottomRight,
             padding: const EdgeInsets.only(bottom: 20, right: 20),
@@ -283,4 +294,45 @@ class _HomeScreenState extends State<HomeScreen> {
       });
     }
   }
+  
+  void _showAddContactDialog() {
+ showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: const Text('Agregar nuevo contacto'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            TextField(
+              decoration: const InputDecoration(
+                labelText: 'Nombre',
+              ),
+            ),
+            TextField(
+              decoration: const InputDecoration(
+                labelText: 'Email',
+              ),
+            ),
+          ],
+        ),
+        actions: <Widget>[
+          TextButton(
+            child: const Text('Cancelar'),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+          TextButton(
+            child: const Text('Agregar'),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+        ],
+      );
+    },
+ );
+}
+
 }
