@@ -10,6 +10,7 @@ import 'package:chatlynx/services/storage_service.dart';
 import 'package:chatlynx/widgets/custom_form_field.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:image_picker/image_picker.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -160,73 +161,90 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 
   Widget _pfpSelectionField() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        if (selectedImage != null)
-          Container(
-            width: MediaQuery.of(context).size.width *
-                0.2, // Reducido el tamaño de la imagen
-            height: MediaQuery.of(context).size.width *
-                0.2, // Reducido el tamaño de la imagen
-            decoration: BoxDecoration(
-              borderRadius:
-                  BorderRadius.circular(10), // Añade bordes redondeados
-              image: DecorationImage(
-                fit: BoxFit.cover,
-                image: FileImage(selectedImage!),
-              ),
+ return Row(
+    mainAxisAlignment: MainAxisAlignment.center,
+    children: [
+      if (selectedImage != null)
+        Container(
+          width: MediaQuery.of(context).size.width * 0.2,
+          height: MediaQuery.of(context).size.width * 0.2,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+            image: DecorationImage(
+              fit: BoxFit.cover,
+              image: FileImage(selectedImage!),
             ),
           ),
-        const SizedBox(width: 20), // Espacio entre la imagen y el botón
-        FloatingActionButton.extended(
-          onPressed: () async {
-            File? file = await _mediaService.getImageFromGallery();
-            if (file != null) {
-              setState(() {
-                selectedImage = file;
-              });
-            }
-          },
-          backgroundColor: const Color.fromRGBO(17, 117, 51, 51),
-          label: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              GestureDetector(
-                onTap: () async {
-                  File? file = await _mediaService.getImageFromGallery();
-                  if (file != null) {
-                    setState(() {
-                      selectedImage = file;
-                    });
-                  }
-                },
-                child: const Row(
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.only(right: 5.0),
-                      child: Icon(
-                        Icons.add_a_photo,
-                        color: Colors.white,
-                      ),
+        ),
+      const SizedBox(width: 20),
+      FloatingActionButton.extended(
+        onPressed: () async {
+          await _showImagePickerOptions();
+        },
+        backgroundColor: const Color.fromRGBO(17, 117, 51, 51),
+        label: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            GestureDetector(
+              onTap: () async {
+                await _showImagePickerOptions();
+              },
+              child: const Row(
+                children: [
+                 Padding(
+                    padding: EdgeInsets.only(right: 5.0),
+                    child: Icon(
+                      Icons.add_a_photo,
+                      color: Colors.white,
                     ),
-                    Text(
-                      'Seleccionar',
-                      style: TextStyle(
-                        fontSize: 15,
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      ),
+                 ),
+                 Text(
+                    'Seleccionar',
+                    style: TextStyle(
+                      fontSize: 15,
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
                     ),
-                  ],
-                ),
+                 ),
+                ],
               ),
-            ],
-          ),
+            ),
+          ],
+        ),
+      ),
+    ],
+ );
+}
+
+Future<void> _showImagePickerOptions() async {
+ final ImagePicker _picker = ImagePicker();
+ final ImageSource? source = await showDialog<ImageSource>(
+    context: context,
+    builder: (BuildContext context) => AlertDialog(
+      title: const Text('Seleccionar imagen'),
+      content: const Text('¿Deseas tomar una foto o seleccionar una de la galería?'),
+      actions: <Widget>[
+        TextButton(
+          child: const Text('Tomar foto'),
+          onPressed: () => Navigator.of(context).pop(ImageSource.camera),
+        ),
+        TextButton(
+          child: const Text('Seleccionar de galería'),
+          onPressed: () => Navigator.of(context).pop(ImageSource.gallery),
         ),
       ],
-    );
-  }
+    ),
+ );
+
+ if (source != null) {
+    final XFile? file = await _picker.pickImage(source: source);
+    if (file != null) {
+      setState(() {
+        selectedImage = File(file.path);
+      });
+    }
+ }
+}
 
   Widget _registerButton() {
     return SizedBox(
