@@ -4,12 +4,14 @@ class UserProfile {
   String? uid;
   String? name;
   String? pfpURL;
+  String? email;
   Map<String, Timestamp>? mensajes;
 
   UserProfile({
     required this.uid,
     required this.name,
     required this.pfpURL,
+    required this.email,
     this.mensajes,
   });
 
@@ -17,6 +19,7 @@ class UserProfile {
     uid = json['uid'];
     name = json['name'];
     pfpURL = json['pfpURL'];
+    email = json['email'];
 
     // Comprobamos si el campo 'mensajes' existe y es un mapa
     if (json.containsKey('mensajes') &&
@@ -37,6 +40,7 @@ class UserProfile {
     data['name'] = name;
     data['pfpURL'] = pfpURL;
     data['uid'] = uid;
+    data['email'] = email;
     // Convertimos los objetos Timestamp a enteros para almacenarlos en Firestore
     data['mensajes'] = mensajes?.map((key, value) => MapEntry(
         key, {'seconds': value.seconds, 'nanoseconds': value.nanoseconds}));

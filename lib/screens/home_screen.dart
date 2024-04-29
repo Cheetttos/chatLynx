@@ -102,52 +102,16 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       body: Column(
         children: [
-          TextField(
-            controller: _searchController,
-            decoration: InputDecoration(
-              labelText: "Buscar contacto",
-              prefixIcon: const Icon(Icons.search),
-              suffixIcon: IconButton(
-                icon: const Icon(Icons.clear),
-                onPressed: () => _searchController.clear(),
-              ),
-            ),
-            onChanged: (value) {
-              filterChats(value);
-            },
-          ),
           Expanded(
               child: IndexedStack(
             index: _selectedIndex,
             children: [
               _chatsList(),
               Container(),
-              Container(),
+              _contactList(),
               const ConfigScreen()
             ],
           )),
-           Container(
-            alignment: Alignment.bottomRight,
-            padding: const EdgeInsets.only(bottom: 21, right: 20),
-            child: FloatingActionButton.extended(
-              onPressed: _showAddContactDialog,
-              backgroundColor: const Color.fromRGBO(17, 117, 51, 51),
-              label: const Text('Contacto'),
-              icon: const Icon(Icons.add),
-              foregroundColor: Colors.white,
-            ),
-          ),
-          Container(
-            alignment: Alignment.bottomRight,
-            padding: const EdgeInsets.only(bottom: 20, right: 20),
-            child: FloatingActionButton.extended(
-              onPressed: () {},
-              backgroundColor: const Color.fromRGBO(17, 117, 51, 51),
-              label: const Text('Nuevo chat'),
-              icon: const Icon(Icons.chat),
-              foregroundColor: Colors.white,
-            ),
-          )
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
@@ -188,27 +152,59 @@ class _HomeScreenState extends State<HomeScreen> {
         }
         if (snapshot.hasData && snapshot.data != null) {
           final users = snapshot.data!.docs;
-          return ListView.builder(
-            itemCount: users.length,
-            itemBuilder: (context, index) {
-              UserProfile user = users[index].data();
-              if (user.uid == _authService.user!.uid) {
-                return Container();
-              } else {
-                return Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 10.0),
-                  child: StreamBuilder<DocumentSnapshot<Chat>>(
-                    stream: _databaseService.getChatStream(
-                      _authService.user!.uid,
-                      user.uid!,
-                    ),
-                    builder: (context, chatSnapshot) {
-                      return _buildChatTile(chatSnapshot, user);
-                    },
+          return Column(
+            children: [
+              TextField(
+                controller: _searchController,
+                decoration: InputDecoration(
+                  labelText: "Buscar en chats",
+                  prefixIcon: const Icon(Icons.search),
+                  suffixIcon: IconButton(
+                    icon: const Icon(Icons.clear),
+                    onPressed: () => _searchController.clear(),
                   ),
-                );
-              }
-            },
+                ),
+                onChanged: (value) {
+                  filterChats(value);
+                },
+              ),
+              Expanded(
+                child: ListView.builder(
+                  itemCount: users.length,
+                  itemBuilder: (context, index) {
+                    UserProfile user = users[index].data();
+                    if (user.uid == _authService.user!.uid) {
+                      return const Center(
+                          child: Text('aqui entra el container'));
+                    } else {
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 10.0),
+                        child: StreamBuilder<DocumentSnapshot<Chat>>(
+                          stream: _databaseService.getChatStream(
+                            _authService.user!.uid,
+                            user.uid!,
+                          ),
+                          builder: (context, chatSnapshot) {
+                            return _buildChatTile(chatSnapshot, user);
+                          },
+                        ),
+                      );
+                    }
+                  },
+                ),
+              ),
+              Container(
+                alignment: Alignment.bottomRight,
+                padding: const EdgeInsets.only(bottom: 20, right: 20),
+                child: FloatingActionButton.extended(
+                  onPressed: () {},
+                  backgroundColor: const Color.fromRGBO(17, 117, 51, 51),
+                  label: const Text('Nuevo chat'),
+                  icon: const Icon(Icons.chat),
+                  foregroundColor: Colors.white,
+                ),
+              )
+            ],
           );
         }
         return const Center(
@@ -294,45 +290,162 @@ class _HomeScreenState extends State<HomeScreen> {
       });
     }
   }
-  
+
   void _showAddContactDialog() {
- showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return AlertDialog(
-        title: const Text('Agregar nuevo contacto'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            TextField(
-              decoration: const InputDecoration(
-                labelText: 'Nombre',
-              ),
+    TextEditingController nameController = TextEditingController();
+    TextEditingController emailController = TextEditingController();
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Agregar nuevo contacto'),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                TextField(
+                  controller: nameController,
+                  decoration: const InputDecoration(
+                    labelText: 'Nombre',
+                  ),
+                ),
+                TextField(
+                  controller: emailController,
+                  decoration: const InputDecoration(
+                    labelText: 'Correo institucional',
+                  ),
+                ),
+              ],
             ),
-            TextField(
-              decoration: const InputDecoration(
-                labelText: 'Email',
-              ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Cancelar'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: const Text('Agregar'),
+              onPressed: () async {
+                String name = nameController.text.trim();
+                String email = emailController.text.trim();
+
+                // Verificar si el email está registrado
+                bool isEmailRegistered =
+                    await _databaseService.isEmailRegistered(email);
+
+                if (!isEmailRegistered) {
+                  _alertService.showToast(
+                    text: "No se encontró el correo en nuestro sistema",
+                    icon: Icons.warning_amber_outlined,
+                  );
+                  return;
+                } else {
+                  // Verificar si el contacto ya está registrado
+                  bool isContactRegistered = await _databaseService
+                      .isContactRegistered(_authService.user!.uid, email);
+
+                  if (isContactRegistered) {
+                    _alertService.showToast(
+                      text: "Este contacto ya se encuentra registrado",
+                      icon: Icons.warning_amber_outlined,
+                    );
+                    return;
+                  } else {
+                    // Si el email está registrado y el contacto no está registrado, proceder a agregarlo
+                    if (email == _authService.user!.email) {
+                      _alertService.showToast(
+                        text: "No puedes registrarte como contacto",
+                        icon: Icons.warning_amber_outlined,
+                      );
+                    } else {
+                      await _databaseService.addContact(
+                        _authService.user!.uid,
+                        name,
+                        email,
+                      );
+                    }
+
+                    Navigator.of(context).pop();
+                  }
+                }
+              },
             ),
           ],
-        ),
-        actions: <Widget>[
-          TextButton(
-            child: const Text('Cancelar'),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-          ),
-          TextButton(
-            child: const Text('Agregar'),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-          ),
-        ],
-      );
-    },
- );
-}
+        );
+      },
+    );
+  }
 
+  Widget _contactList() {
+    return StreamBuilder<List<UserProfile>>(
+      stream: _databaseService.getUserContacts(_authService.user!.uid),
+      builder: (context, snapshot) {
+        if (snapshot.hasError) {
+          return const Center(
+            child: Text("Error al cargar contactos"),
+          );
+        }
+        if (snapshot.hasData && snapshot.data != null) {
+          final contacts = snapshot.data!;
+          return Stack(
+            children: [
+              ListView.builder(
+                itemCount: contacts.length,
+                itemBuilder: (context, index) {
+                  final contact = contacts[index];
+                  return ListTile(
+                    leading: CircleAvatar(
+                      backgroundImage: contact.pfpURL != null
+                          ? NetworkImage(contact.pfpURL!)
+                          : null,
+                      child: contact.pfpURL == null
+                          ? const Icon(Icons.person)
+                          : null,
+                    ),
+                    title: Text(contact.name ?? ''),
+                    subtitle: Text(contact.email ?? ''),
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton(
+                          onPressed: () {
+                            // Lógica para iniciar un chat con el contacto
+                          },
+                          icon: const Icon(Icons.chat),
+                        ),
+                        IconButton(
+                          onPressed: () {
+                            // Lógica para iniciar una videollamada con el contacto
+                          },
+                          icon: const Icon(Icons.videocam),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              ),
+              Positioned(
+                bottom: 20, // Ajusta la posición vertical
+                right: 20, // Ajusta la posición horizontal
+                child: FloatingActionButton.extended(
+                  onPressed: () {
+                    _showAddContactDialog();
+                  },
+                  backgroundColor: const Color.fromRGBO(17, 117, 51, 51),
+                  label: const Text('Nuevo contacto'),
+                  icon: const Icon(Icons.add),
+                  foregroundColor: Colors.white,
+                ),
+              ),
+            ],
+          );
+        }
+        return const Center(
+          child: CircularProgressIndicator(),
+        );
+      },
+    );
+  }
 }

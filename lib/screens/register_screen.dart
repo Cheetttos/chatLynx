@@ -161,90 +161,91 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 
   Widget _pfpSelectionField() {
- return Row(
-    mainAxisAlignment: MainAxisAlignment.center,
-    children: [
-      if (selectedImage != null)
-        Container(
-          width: MediaQuery.of(context).size.width * 0.2,
-          height: MediaQuery.of(context).size.width * 0.2,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10),
-            image: DecorationImage(
-              fit: BoxFit.cover,
-              image: FileImage(selectedImage!),
-            ),
-          ),
-        ),
-      const SizedBox(width: 20),
-      FloatingActionButton.extended(
-        onPressed: () async {
-          await _showImagePickerOptions();
-        },
-        backgroundColor: const Color.fromRGBO(17, 117, 51, 51),
-        label: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            GestureDetector(
-              onTap: () async {
-                await _showImagePickerOptions();
-              },
-              child: const Row(
-                children: [
-                 Padding(
-                    padding: EdgeInsets.only(right: 5.0),
-                    child: Icon(
-                      Icons.add_a_photo,
-                      color: Colors.white,
-                    ),
-                 ),
-                 Text(
-                    'Seleccionar',
-                    style: TextStyle(
-                      fontSize: 15,
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
-                 ),
-                ],
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        if (selectedImage != null)
+          Container(
+            width: MediaQuery.of(context).size.width * 0.2,
+            height: MediaQuery.of(context).size.width * 0.2,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              image: DecorationImage(
+                fit: BoxFit.cover,
+                image: FileImage(selectedImage!),
               ),
             ),
-          ],
-        ),
-      ),
-    ],
- );
-}
-
-Future<void> _showImagePickerOptions() async {
- final ImagePicker _picker = ImagePicker();
- final ImageSource? source = await showDialog<ImageSource>(
-    context: context,
-    builder: (BuildContext context) => AlertDialog(
-      title: const Text('Seleccionar imagen'),
-      content: const Text('¿Deseas tomar una foto o seleccionar una de la galería?'),
-      actions: <Widget>[
-        TextButton(
-          child: const Text('Tomar foto'),
-          onPressed: () => Navigator.of(context).pop(ImageSource.camera),
-        ),
-        TextButton(
-          child: const Text('Seleccionar de galería'),
-          onPressed: () => Navigator.of(context).pop(ImageSource.gallery),
+          ),
+        const SizedBox(width: 20),
+        FloatingActionButton.extended(
+          onPressed: () async {
+            await _showImagePickerOptions();
+          },
+          backgroundColor: const Color.fromRGBO(17, 117, 51, 51),
+          label: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              GestureDetector(
+                onTap: () async {
+                  await _showImagePickerOptions();
+                },
+                child: const Row(
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.only(right: 5.0),
+                      child: Icon(
+                        Icons.add_a_photo,
+                        color: Colors.white,
+                      ),
+                    ),
+                    Text(
+                      'Seleccionar',
+                      style: TextStyle(
+                        fontSize: 15,
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ],
-    ),
- );
+    );
+  }
 
- if (source != null) {
-    final XFile? file = await _picker.pickImage(source: source);
-    if (file != null) {
-      setState(() {
-        selectedImage = File(file.path);
-      });
+  Future<void> _showImagePickerOptions() async {
+    final ImagePicker _picker = ImagePicker();
+    final ImageSource? source = await showDialog<ImageSource>(
+      context: context,
+      builder: (BuildContext context) => AlertDialog(
+        title: const Text('Seleccionar imagen'),
+        content: const Text(
+            '¿Deseas tomar una foto o seleccionar una de la galería?'),
+        actions: <Widget>[
+          TextButton(
+            child: const Text('Tomar foto'),
+            onPressed: () => Navigator.of(context).pop(ImageSource.camera),
+          ),
+          TextButton(
+            child: const Text('Seleccionar de galería'),
+            onPressed: () => Navigator.of(context).pop(ImageSource.gallery),
+          ),
+        ],
+      ),
+    );
+
+    if (source != null) {
+      final XFile? file = await _picker.pickImage(source: source);
+      if (file != null) {
+        setState(() {
+          selectedImage = File(file.path);
+        });
+      }
     }
- }
-}
+  }
 
   Widget _registerButton() {
     return SizedBox(
@@ -269,13 +270,14 @@ Future<void> _showImagePickerOptions() async {
                 if (pfpURL != null) {
                   await _databaseService.createUserProfile(
                     userProfile: UserProfile(
-                      uid: _authService.user!.uid,
-                      name: name,
-                      pfpURL: pfpURL,
-                    ),
+                        uid: _authService.user!.uid,
+                        name: name,
+                        pfpURL: pfpURL,
+                        email: email),
                   );
                   _alertService.showToast(
-                    text: "Usuario Registrado Correctamente, verifica tu correo!",
+                    text:
+                        "Usuario Registrado Correctamente, verifica tu correo!",
                     icon: Icons.check,
                   );
                   _navigationService.goBack();

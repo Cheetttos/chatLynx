@@ -145,27 +145,97 @@ class DatabaseService {
         .cast<DocumentSnapshot<Chat>>();
   }
 
-  Future<void> addContact(String userId, String contactId, String contactName, String contactNumber) async {
- await FirebaseFirestore.instance.collection('users').doc(userId).collection('contacts').add({
-    'id': contactId,
-    'name': contactName,
-    'number': contactNumber,
- });
-}
+  //contactos
+  Future<bool> isEmailRegistered(String email) async {
+    try {
+      final querySnapshot = await _firebaseFirestore
+          .collection('users')
+          .where('email', isEqualTo: email)
+          .get();
 
-Future<void> updateUserName(String? uid, String newName) async {
- if (uid != null) {
-    await _usersCollection?.doc(uid).update({'name': newName});
- }
-}
+      return querySnapshot.docs.isNotEmpty;
+    } catch (e) {
+      print('Error al verificar el email: $e');
+      return false;
+    }
+  }
 
-Future<void> updateUserProfilePicUrl(String? uid, String newProfilePicUrl) async {
- if (uid != null) {
-    await _usersCollection?.doc(uid).update({'profilePicUrl': newProfilePicUrl});
- }
-}
+  Future<bool> isContactRegistered(String userId, String contactEmail) async {
+    try {
+      final querySnapshot = await _firebaseFirestore
+          .collection('users')
+          .doc(userId)
+          .collection('contacts')
+          .where('email', isEqualTo: contactEmail)
+          .get();
 
+      return querySnapshot.docs.isNotEmpty;
+    } catch (e) {
+      print('Error al verificar el contacto: $e');
+      return false;
+    }
+  }
 
+  Future<void> addContact(
+      String userId, String contactName, String contactEmail) async {
+    try {
+      // Si el email está registrado y el contacto no está registrado, proceder a agregarlo
+      await _firebaseFirestore
+          .collection('users')
+          .doc(userId)
+          .collection('contacts')
+          .add({
+        'name': contactName,
+        'email': contactEmail,
+      });
+    } catch (e) {
+      print('Error al agregar el contacto: $e');
+      rethrow;
+    }
+  }
 
+  Stream<List<UserProfile>> getUserContacts(String userId) {
+    return _firebaseFirestore
+        .collection('users')
+        .doc(userId)
+        .collection('contacts')
+        .snapshots()
+        .asyncMap((querySnapshot) async {
+      List<UserProfile> contacts = [];
+      for (var doc in querySnapshot.docs) {
+        String contactEmail = doc.get('email');
+        UserProfile? contact =
+            (await getUserProfileByEmail(contactEmail)) as UserProfile?;
+        contacts.add(contact!);
+      }
+      return contacts;
+    });
+  }
 
+  Future<Object?> getUserProfileByEmail(String email) async {
+    QuerySnapshot<Object?> querySnapshot =
+        await _usersCollection!.where('email', isEqualTo: email).get();
+
+    if (querySnapshot.docs.isNotEmpty) {
+      return querySnapshot.docs.first.data();
+    } else {
+      throw Exception('No se encontró un usuario con el correo $email');
+    }
+  }
+
+  //CRUD usuario
+  Future<void> updateUserName(String? uid, String newName) async {
+    if (uid != null) {
+      await _usersCollection?.doc(uid).update({'name': newName});
+    }
+  }
+
+  Future<void> updateUserProfilePicUrl(
+      String? uid, String newProfilePicUrl) async {
+    if (uid != null) {
+      await _usersCollection
+          ?.doc(uid)
+          .update({'profilePicUrl': newProfilePicUrl});
+    }
+  }
 }
