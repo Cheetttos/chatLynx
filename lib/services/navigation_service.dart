@@ -1,4 +1,6 @@
 import 'package:chatlynx/screens/config_screen.dart';
+import 'package:chatlynx/screens/contact_list_screen.dart';
+import 'package:chatlynx/screens/contacts_screen.dart';
 import 'package:chatlynx/screens/home_screen.dart';
 import 'package:chatlynx/screens/login_screen.dart';
 import 'package:chatlynx/screens/register_screen.dart';
@@ -8,10 +10,11 @@ class NavigationService {
   late GlobalKey<NavigatorState> _navigatorKey;
 
   final Map<String, Widget Function(BuildContext)> _routes = {
-    "/login": (context) => LoginScreen(),
-    "/home": (context) => HomeScreen(),
-    "/register": (context) => RegisterScreen(),
-    "/config": (context) => ConfigScreen(),
+    "/login": (context) => const LoginScreen(),
+    "/home": (context) => const HomeScreen(),
+    "/register": (context) => const RegisterScreen(),
+    "/config": (context) => const ConfigScreen(),
+    "/contact": (context) => const ContactScreen(),
   };
 
   GlobalKey<NavigatorState>? get navigatiorKey {
