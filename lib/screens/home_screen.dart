@@ -4,6 +4,7 @@ import 'package:chatlynx/screens/chat_screen.dart';
 import 'package:chatlynx/screens/config_screen.dart';
 import 'package:chatlynx/screens/contact_list_screen.dart';
 import 'package:chatlynx/screens/contacts_screen.dart';
+import 'package:chatlynx/screens/group_screen.dart';
 import 'package:chatlynx/services/alert_service.dart';
 import 'package:chatlynx/services/auth_service.dart';
 import 'package:chatlynx/services/database_service.dart';
@@ -38,6 +39,9 @@ class _HomeScreenState extends State<HomeScreen> {
   void _selectedOptionItemBottomNavigation(int index) {
     setState(() {
       _selectedIndex = index;
+      /*if (_selectedIndex == 1) {
+      _navigationService.pushReplacementNamed("/group");
+    }*/
     });
   }
 
@@ -98,7 +102,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   _navigationService.pushReplacementNamed("/login");
                 }
               },
-              color: Colors.red,
+              color: Colors.black,
               icon: const Icon(Icons.logout))
         ],
       ),
@@ -109,7 +113,7 @@ class _HomeScreenState extends State<HomeScreen> {
             index: _selectedIndex,
             children: [
               _chatsList(),
-              Container(),
+              const GroupScreen(),
               const ContactsListScreen(),
               const ConfigScreen()
             ],

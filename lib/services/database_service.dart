@@ -194,6 +194,18 @@ class DatabaseService {
     }
   }
 
+  Future<void> addGroup(String groupName) async {
+    try {
+      // Agregar el grupo a una colección específica
+      await _firebaseFirestore.collection('groups').add({
+        'name': groupName,
+      });
+    } catch (e) {
+      print('Error al agregar el grupo: $e');
+      rethrow;
+    }
+  }
+
   Stream<List<UserProfile>> getUserContacts(String userId) {
     return _firebaseFirestore
         .collection('users')
@@ -210,6 +222,97 @@ class DatabaseService {
       }
       return contacts;
     });
+  }
+
+  Stream<List<String>> getUserGroups(String userId) {
+    return _firebaseFirestore
+        .collection('groups')
+        .snapshots()
+        .map((querySnapshot) {
+      List<String> groups = [];
+      for (var doc in querySnapshot.docs) {
+        String groupName = doc.get('name');
+        groups.add(groupName);
+      }
+      return groups;
+    });
+  }
+
+  /*Future<void> addContactToGroup(String email, String groupName) async {
+    try {
+      // Verificar si el correo electrónico existe en los usuarios
+      var userRef = _firebaseFirestore
+          .collection('users')
+          .where('email', isEqualTo: email);
+      var userSnapshot = await userRef.get();
+      if (userSnapshot.docs.isNotEmpty) {
+        var userId = userSnapshot.docs.first.id;
+
+        // Verificar si el usuario ya está en el grupo
+        var groupRef = _firebaseFirestore
+            .collection('groups')
+            .where('name', isEqualTo: groupName)
+            .where('members', arrayContains: userId);
+        var groupSnapshot = await groupRef.get();
+        if (groupSnapshot.docs.isEmpty) {
+          // Agregar el usuario al grupo
+          await _firebaseFirestore
+              .collection('groups')
+              .doc(groupSnapshot.docs.first.id)
+              .update({
+            'members': FieldValue.arrayUnion([userId]),
+          });
+        } else {
+          // El usuario ya está en el grupo
+          print('El usuario ya está en el grupo.');
+        }
+      } else {
+        // El correo electrónico no está asociado a ningún usuario
+        print(
+            'No se encontró ningún usuario con el correo electrónico proporcionado.');
+      }
+    } catch (e) {
+      print('Error al agregar el contacto al grupo: $e');
+      return;
+    }
+  }*/
+
+  Future<void> addContactToGroup(String email, String groupName) async {
+    try {
+      // Si el email está registrado y el contacto no está registrado, proceder a agregarlo
+      await _firebaseFirestore
+          .collection('groups')
+          .doc(groupName)
+          .collection('members')
+          .add({
+        'name': email,
+      });
+    } catch (e) {
+      print('Error al agregar el contacto: $e');
+      rethrow;
+    }
+
+  }
+
+  Future<void> deleteGroup(String groupName) async {
+    try {
+      // Obtener la referencia del grupo a eliminar
+      final groupRef = _firebaseFirestore
+          .collection('groups')
+          .where('name', isEqualTo: groupName);
+
+      // Obtener el ID del grupo
+      final querySnapshot = await groupRef.get();
+      if (querySnapshot.docs.isNotEmpty) {
+        final groupId = querySnapshot.docs.first.id;
+
+        // Eliminar el grupo
+        await _firebaseFirestore.collection('groups').doc(groupId).delete();
+      }
+    } catch (e) {
+      print('Error al eliminar el grupo: $e');
+      rethrow;
+    }
   }
 
   Future<Object?> getUserProfileByEmail(String email) async {

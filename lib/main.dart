@@ -38,7 +38,7 @@ class MainApp extends StatelessWidget {
           title: 'ChatLynx',
           theme: value
               ? ThemeData(
-                  colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
+                  colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
                   useMaterial3: true,
                   textTheme: GoogleFonts.montserratTextTheme(),
                 )
