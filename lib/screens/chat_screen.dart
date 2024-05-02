@@ -11,6 +11,7 @@ import 'package:chatlynx/utils.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dash_chat_2/dash_chat_2.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:get_it/get_it.dart';
 
 class ChatPage extends StatefulWidget {
@@ -79,13 +80,30 @@ class _ChatPageState extends State<ChatPage> {
           messageOptions: const MessageOptions(
             showOtherUsersAvatar: true,
             showTime: true,
+            showOtherUsersName: true,
+            currentUserContainerColor: Color.fromRGBO(17, 117, 51, 51),
           ),
           inputOptions: InputOptions(
-            alwaysShowSend: true,
-            trailing: [
-              _mediaMessageButton(),
-            ],
-          ),
+              trailing: [
+                _mediaMessageMenu(),
+                IconButton(
+                    onPressed: () {},
+                    icon: const Icon(
+                      Icons.sticky_note_2_rounded,
+                      color: Color.fromRGBO(17, 117, 51, 51),
+                    ))
+              ],
+              alwaysShowSend: true,
+              inputDecoration: InputDecoration(
+                hintText: 'Escribe un mensaje',
+                hintStyle: TextStyle(color: Colors.grey.shade500),
+                fillColor: Colors.grey[200],
+                filled: true,
+                border: const OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.elliptical(30, 30))),
+                contentPadding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+              )),
           currentUser: currentUser!,
           onSend: (message) {
             _sendMessage(message);
@@ -180,14 +198,64 @@ class _ChatPageState extends State<ChatPage> {
                   )
                 ],
               );
-
               _sendMessage(chatMessage);
             }
           }
         },
-        icon: Icon(
+        icon: const Icon(
           Icons.image,
-          color: Theme.of(context).colorScheme.primary,
+          color: Color.fromRGBO(17, 117, 51, 51),
         ));
+  }
+
+  Widget _cameraMessageButton() {
+    return IconButton(onPressed: () {}, icon: Icon(Icons.camera_alt_rounded));
+  }
+
+  Widget _mediaMessageMenu() {
+    return PopupMenuButton<String>(
+      icon: const Icon(Icons.attach_file_rounded,
+          color: Color.fromRGBO(17, 117, 51, 51)),
+      constraints: const BoxConstraints.tightFor(width: 50, height: 190),
+      color: const Color.fromRGBO(17, 117, 51, 51),
+      onSelected: (String result) {
+        switch (result) {
+          case "camera":
+            _cameraMessageButton();
+            break;
+          case "image":
+            _mediaMessageButton();
+            break;
+          case "gif":
+            // Lógica para seleccionar un gif
+            break;
+          default:
+            break;
+        }
+      },
+      itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
+        const PopupMenuItem<String>(
+          value: "camera",
+          child: Icon(
+            Icons.camera_alt_rounded,
+            color: Colors.white,
+          ),
+        ),
+        const PopupMenuItem<String>(
+          value: "image",
+          child: Icon(
+            Icons.image,
+            color: Colors.white,
+          ),
+        ),
+        const PopupMenuItem<String>(
+          value: "gif",
+          child: Icon(
+            Icons.gif_box_rounded,
+            color: Colors.white,
+          ),
+        ),
+      ],
+    );
   }
 }
