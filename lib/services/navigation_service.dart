@@ -1,6 +1,7 @@
 import 'package:chatlynx/screens/config_screen.dart';
 import 'package:chatlynx/screens/contact_list_screen.dart';
 import 'package:chatlynx/screens/contacts_screen.dart';
+import 'package:chatlynx/screens/group_screen.dart';
 import 'package:chatlynx/screens/home_screen.dart';
 import 'package:chatlynx/screens/login_screen.dart';
 import 'package:chatlynx/screens/register_screen.dart';
@@ -15,6 +16,7 @@ class NavigationService {
     "/register": (context) => const RegisterScreen(),
     "/config": (context) => const ConfigScreen(),
     "/contact": (context) => const ContactScreen(),
+    "/group": (context) => const GroupScreen(),
   };
 
   GlobalKey<NavigatorState>? get navigatiorKey {
