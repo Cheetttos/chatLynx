@@ -296,6 +296,7 @@ class DatabaseService {
 
   }*/
 
+  //Validar grupos
   Future<void> addContactToGroup(String email, String groupName) async {
     try {
       if (_auth.currentUser != null) {
