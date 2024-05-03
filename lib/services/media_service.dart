@@ -41,4 +41,13 @@ class MediaService {
       throw Exception('Error al cargar la imagen: $e');
     }
   }
+  Future<File?> getImageFromCamera() async {
+    final XFile? _file = await _picker.pickImage(source: ImageSource.camera);
+
+    if (_file != null) {
+      return File(_file.path);
+    }
+
+    return null;
+  }
 }

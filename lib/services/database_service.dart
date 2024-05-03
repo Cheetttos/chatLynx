@@ -321,7 +321,8 @@ class DatabaseService {
               'name': email,
             });
           } else {
-            throw Exception('Usuario no autorizado para agregar contactos a este grupo.');
+            throw Exception(
+                'Usuario no autorizado para agregar contactos a este grupo.');
           }
         } else {
           throw Exception('No se pudo obtener el ID del usuario.');
@@ -335,7 +336,7 @@ class DatabaseService {
     }
   }
 
-   Future<List<String>> getGroupsWithAccess() async {
+  Future<List<String>> getGroupsWithAccess() async {
     try {
       List<String> groupsWithAccess = [];
 
@@ -404,10 +405,27 @@ class DatabaseService {
   Future<void> updateUserProfilePicUrl(
       String? uid, String newProfilePicUrl) async {
     if (uid != null) {
-      await _usersCollection
-          ?.doc(uid)
-          .update({'profilePicUrl': newProfilePicUrl});
+      await _usersCollection?.doc(uid).update({'pfpURL': newProfilePicUrl});
     }
   }
+
+  Future<String> getGeneratedChannelName(
+      String currentUserId, String contactId) async {
+    String channelName = 'videocall_$currentUserId$contactId';
+    return channelName;
+  }
+
+  /*Future<List<UserProfile>> getParticipantProfiles(
+      String currentUserId, String contactId) async {
+    List<UserProfile> participants = [];
+
+    UserProfile currentUserProfile = await getUserProfile(currentUserId);
+    UserProfile contactProfile = await getUserProfile(contactId);
+
+    participants.add(currentUserProfile);
+    participants.add(contactProfile);
+
+    return participants;
+  }*/
   
 }

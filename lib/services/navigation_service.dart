@@ -6,6 +6,7 @@ import 'package:chatlynx/screens/home_screen.dart';
 import 'package:chatlynx/screens/login_screen.dart';
 import 'package:chatlynx/screens/register_screen.dart';
 import 'package:chatlynx/screens/edit_profile_screen.dart';
+import 'package:chatlynx/screens/video_call_screen.dart';
 import 'package:flutter/material.dart';
 
 class NavigationService {
@@ -20,6 +21,24 @@ class NavigationService {
     "/contact": (context) => const ContactScreen(),
     "/group": (context) => const GroupScreen(),
   };
+
+  Future<void> pushVideoCall({
+    required String channelName,
+    required List<String> participantIds,
+    required List<String> participantNames,
+    required List<String> participantProfilePictures,
+  }) async {
+    return push(
+      MaterialPageRoute(
+        builder: (context) => VideoCallScreen(
+          channelName: channelName,
+          participantIds: participantIds,
+          participantNames: participantNames,
+          participantProfilePictures: participantProfilePictures,
+        ),
+      ),
+    );
+  }
 
   GlobalKey<NavigatorState>? get navigatiorKey {
     return _navigatorKey;

@@ -1,7 +1,10 @@
+import 'package:chatlynx/services/alert_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class AuthService {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+  late AlertService _alertService;
 
   User? _user;
 
@@ -63,6 +66,18 @@ class AuthService {
       _user = user;
     } else {
       _user = null;
+    }
+  }
+
+  Future<void> requestPermissions() async {
+    var status = await Permission.microphone.request();
+    if (!status.isGranted) {
+      _alertService.showToast(text: 'No se podrá realizar la llamada');
+    }
+
+    status = await Permission.camera.request();
+    if (!status.isGranted) {
+      _alertService.showToast(text: 'No se podrá realizar la llamada');
     }
   }
 }

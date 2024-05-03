@@ -9,6 +9,30 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.3.32"
+  agora_rtc_engine:
+    dependency: "direct main"
+    description:
+      name: agora_rtc_engine
+      sha256: ec84db08cd6727e3e480abe9089df4a9522aa4315f688ac2abf25a82f26c4055
+      url: "https://pub.dev"
+    source: hosted
+    version: "6.3.0"
+  agora_rtm:
+    dependency: transitive
+    description:
+      name: agora_rtm
+      sha256: "6c65cf6c9658acc9024322798c546e9dc61c39605b67d0af069793d4ee81d199"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.5.9"
+  agora_uikit:
+    dependency: "direct main"
+    description:
+      name: agora_uikit
+      sha256: "2c06a3a12a1aeba6dda84c56bef66091fa6b87b11cc96dbff27c092d0697cef7"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.3.10"
   args:
     dependency: transitive
     description:
@@ -53,10 +77,10 @@ packages:
     dependency: transitive
     description:
       name: cached_network_image_web
-      sha256: "42a835caa27c220d1294311ac409a43361088625a4f23c820b006dd9bffb3316"
+      sha256: "205d6a9f1862de34b93184f22b9d2d94586b2f05c581d546695e3d8f6a805cd7"
       url: "https://pub.dev"
     source: hosted
-    version: "1.1.1"
+    version: "1.2.0"
   characters:
     dependency: transitive
     description:
@@ -137,6 +161,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.8"
+  dart_webrtc:
+    dependency: transitive
+    description:
+      name: dart_webrtc
+      sha256: b3a4f109c551a10170ece8fc79b5ca1b98223f24bcebc0f971d7fe35daad7a3b
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.4.4"
   dash_chat_2:
     dependency: "direct main"
     description:
@@ -335,7 +367,7 @@ packages:
     source: hosted
     version: "4.5.0"
   flutter_cache_manager:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: flutter_cache_manager
       sha256: "395d6b7831f21f3b989ebedbb785545932adb9afe2622c1ffacf7f4b53a7e544"
@@ -405,6 +437,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_webrtc:
+    dependency: "direct main"
+    description:
+      name: flutter_webrtc
+      sha256: "20eac28848a2dffb26cc2b2870a5164613904511a0b7e8f4825e31a2768175d2"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.10.3"
   get_it:
     dependency: "direct main"
     description:
@@ -421,6 +461,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.5.4"
+  giphy_picker:
+    dependency: "direct main"
+    description:
+      name: giphy_picker
+      sha256: "56de5f9fbc9a067f33f8311311e78004f2629fb1c924c788c9d268f98193b89d"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.0.2"
   google_fonts:
     dependency: "direct main"
     description:
@@ -481,10 +529,10 @@ packages:
     dependency: transitive
     description:
       name: image_picker_android
-      sha256: "8e75431a62b7feb4fd55cb4a5c6f0ac4564460ec5dc09f9c4a0d50a5ce7c4cb9"
+      sha256: "40e24f467b75cd6f4a92ee93dd13d1a7bcb4523a84fd95f00c755f01f42398c8"
       url: "https://pub.dev"
     source: hosted
-    version: "0.8.10"
+    version: "0.8.11"
   image_picker_for_web:
     dependency: transitive
     description:
@@ -541,14 +589,30 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.18.1"
+  iris_method_channel:
+    dependency: transitive
+    description:
+      name: iris_method_channel
+      sha256: "78caede20be4a1dd258262fb13704aab2f16fd05ef414bed06e7b1e3b95b3413"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.1"
   js:
     dependency: transitive
     description:
       name: js
-      sha256: c1b2e9b5ea78c45e1a0788d29606ba27dc5f71f019f32ca5140f61ef071838cf
+      sha256: f2c445dce49627136094980615a031419f7f3eb393237e4ecd97ac15dea343f3
       url: "https://pub.dev"
     source: hosted
-    version: "0.7.1"
+    version: "0.6.7"
+  json_annotation:
+    dependency: transitive
+    description:
+      name: json_annotation
+      sha256: "1ce844379ca14835a50d2f019a3099f419082cfdd231cd86a142af94dd5c6bb1"
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.9.0"
   leak_tracker:
     dependency: transitive
     description:
@@ -581,6 +645,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.0"
+  logging:
+    dependency: transitive
+    description:
+      name: logging
+      sha256: "623a88c9594aa774443aa3eb2d41807a48486b5613e67599fb4c41c0ad47c340"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.2.0"
   markdown:
     dependency: transitive
     description:
@@ -693,6 +765,54 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.2.1"
+  permission_handler:
+    dependency: "direct main"
+    description:
+      name: permission_handler
+      sha256: "18bf33f7fefbd812f37e72091a15575e72d5318854877e0e4035a24ac1113ecb"
+      url: "https://pub.dev"
+    source: hosted
+    version: "11.3.1"
+  permission_handler_android:
+    dependency: transitive
+    description:
+      name: permission_handler_android
+      sha256: "8bb852cd759488893805c3161d0b2b5db55db52f773dbb014420b304055ba2c5"
+      url: "https://pub.dev"
+    source: hosted
+    version: "12.0.6"
+  permission_handler_apple:
+    dependency: transitive
+    description:
+      name: permission_handler_apple
+      sha256: e9ad66020b89ff1b63908f247c2c6f931c6e62699b756ef8b3c4569350cd8662
+      url: "https://pub.dev"
+    source: hosted
+    version: "9.4.4"
+  permission_handler_html:
+    dependency: transitive
+    description:
+      name: permission_handler_html
+      sha256: "54bf176b90f6eddd4ece307e2c06cf977fb3973719c35a93b85cc7093eb6070d"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.1.1"
+  permission_handler_platform_interface:
+    dependency: transitive
+    description:
+      name: permission_handler_platform_interface
+      sha256: "48d4fcf201a1dad93ee869ab0d4101d084f49136ec82a8a06ed9cfeacab9fd20"
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.2.1"
+  permission_handler_windows:
+    dependency: transitive
+    description:
+      name: permission_handler_windows
+      sha256: "1a790728016f79a41216d88672dbc5df30e686e811ad4e698bfc51f76ad91f1e"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.2.1"
   platform:
     dependency: transitive
     description:
@@ -701,6 +821,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.1.4"
+  platform_detect:
+    dependency: transitive
+    description:
+      name: platform_detect
+      sha256: "08f4ee79c0e1c4858d37e06b22352a3ebdef5466b613749a3adb03e703d4f5b0"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.11"
   plugin_platform_interface:
     dependency: transitive
     description:
@@ -717,6 +845,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "6.1.2"
+  pub_semver:
+    dependency: transitive
+    description:
+      name: pub_semver
+      sha256: "40d3ab1bbd474c4c2328c91e3a7df8c6dd629b79ece4c4bd04bee496a224fb0c"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.1.4"
   rive:
     dependency: "direct main"
     description:
@@ -758,10 +894,10 @@ packages:
     dependency: transitive
     description:
       name: sqflite
-      sha256: "5ce2e1a15e822c3b4bfb5400455775e421da7098eed8adc8f26298ada7c9308c"
+      sha256: a43e5a27235518c03ca238e7b4732cf35eabe863a369ceba6cbefa537a66f16d
       url: "https://pub.dev"
     source: hosted
-    version: "2.3.3"
+    version: "2.3.3+1"
   sqflite_common:
     dependency: transitive
     description:
@@ -970,6 +1106,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.5.1"
+  webrtc_interface:
+    dependency: transitive
+    description:
+      name: webrtc_interface
+      sha256: abec3ab7956bd5ac539cf34a42fa0c82ea26675847c0966bb85160400eea9388
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.2.0"
   win32:
     dependency: transitive
     description:
