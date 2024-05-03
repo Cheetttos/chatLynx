@@ -248,16 +248,31 @@ class _EditScreenState extends State<EditScreen> {
   Future<void> _updateUserData(String newName, String newProfilePicUrl) async {
   String? uid = _authService.user?.uid;
   if (uid != null) {
-    // Actualizar el nombre del usuario
-    await _databaseService.updateUserName(uid, newName);
+    // Verificar si se seleccionó una imagen nueva o si el nombre cambió
+    if (newName != currentUserName || newProfilePicUrl.isNotEmpty) {
+      // Actualizar el nombre del usuario si cambió
+      if (newName != currentUserName) {
+        await _databaseService.updateUserName(uid, newName);
+      }
 
-    // Actualizar la URL de la imagen de perfil del usuario
-    await _databaseService.updateUserProfilePicUrl(uid, newProfilePicUrl);
+      // Actualizar la URL de la imagen de perfil del usuario si se seleccionó una nueva imagen
+      if (newProfilePicUrl.isNotEmpty) {
+        await _databaseService.updateUserProfilePicUrl(uid, newProfilePicUrl);
+      }
+    }
+
+    // Si no se hicieron cambios, enviar los datos actuales
+    else {
+      newName = currentUserName;
+      newProfilePicUrl = await _storageService.getUserProfilePicUrl(uid) ?? '';
+    }
+
+    // Navegar de regreso a ConfigScreen
+    Navigator.pop(context, {'name': newName, 'profilePicUrl': newProfilePicUrl});
   }
-
-  // Navegar de regreso a ConfigScreen
-  Navigator.pop(context, {'name': newName, 'profilePicUrl': newProfilePicUrl});
 }
+
+
 
   Widget _registerButton() {
   return SizedBox(
