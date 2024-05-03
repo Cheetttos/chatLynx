@@ -3,16 +3,21 @@ import 'dart:io';
 import 'package:chatlynx/modelos/chat.dart';
 import 'package:chatlynx/modelos/message.dart';
 import 'package:chatlynx/modelos/user_profile.dart';
+import 'package:chatlynx/screens/video_call_screen.dart';
+import 'package:chatlynx/services/alert_service.dart';
 import 'package:chatlynx/services/auth_service.dart';
 import 'package:chatlynx/services/database_service.dart';
 import 'package:chatlynx/services/media_service.dart';
+import 'package:chatlynx/services/navigation_service.dart';
 import 'package:chatlynx/services/storage_service.dart';
+import 'package:chatlynx/services/webrtc_service.dart';
 import 'package:chatlynx/utils.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dash_chat_2/dash_chat_2.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:get_it/get_it.dart';
+import 'package:giphy_picker/giphy_picker.dart';
+import 'package:path/path.dart';
 
 class ChatPage extends StatefulWidget {
   final UserProfile chatUser;
@@ -32,6 +37,14 @@ class _ChatPageState extends State<ChatPage> {
   late DatabaseService _databaseService;
   late MediaService _mediaService;
   late StorageService _storageService;
+  late AlertService _alertService;
+  late NavigationService _navigationService;
+  final WebRTCService _webrtcService = WebRTCService();
+  String callName = '';
+
+  GiphyGif? _gif;
+
+  Object? get checkSelfPermission => null;
 
   @override
   void initState() {
@@ -41,6 +54,10 @@ class _ChatPageState extends State<ChatPage> {
     _databaseService = _getIt.get<DatabaseService>();
     _mediaService = _getIt.get<MediaService>();
     _storageService = _getIt.get<StorageService>();
+    _alertService = _getIt.get<AlertService>();
+    _navigationService = _getIt.get<NavigationService>();
+    _webrtcService.initialize();
+
     currentUser = ChatUser(
       id: _authService.user!.uid,
       firstName: _authService.user!.displayName,
@@ -60,6 +77,35 @@ class _ChatPageState extends State<ChatPage> {
         title: Text(
           widget.chatUser.name!,
         ),
+        actions: <Widget>[
+          IconButton(onPressed: () {}, icon: const Icon(Icons.call)),
+          IconButton(
+            onPressed: () async {
+              String callName =
+                  generateChatID(uid1: currentUser!.id, uid2: otherUser!.id);
+
+              await _navigationService.push(
+                MaterialPageRoute(
+                  builder: (context) => VideoCallScreen(
+                    channelName: callName,
+                    participantIds: [currentUser!.id, otherUser!.id],
+                    participantNames: [
+                      currentUser!.firstName ?? 'Usuario actual',
+                      otherUser!.firstName ?? 'Otro usuario'
+                    ],
+                    participantProfilePictures: [
+                      currentUser!.profileImage ??
+                          'https://example.com/default-profile-picture.png',
+                      otherUser!.profileImage ??
+                          'https://example.com/default-profile-picture.png'
+                    ],
+                  ),
+                ),
+              );
+            },
+            icon: const Icon(Icons.video_chat),
+          )
+        ],
       ),
       body: _buildUI(),
     );
@@ -176,32 +222,7 @@ class _ChatPageState extends State<ChatPage> {
 
   Widget _mediaMessageButton() {
     return IconButton(
-        onPressed: () async {
-          File? file = await _mediaService.getImageFromGallery();
-          if (file != null) {
-            String chatID = generateChatID(
-              uid1: currentUser!.id,
-              uid2: otherUser!.id,
-            );
-            String? downloadURL = await _storageService.uploadImageToChat(
-                file: file, chatId: chatID);
-
-            if (downloadURL != null) {
-              ChatMessage chatMessage = ChatMessage(
-                user: currentUser!,
-                createdAt: DateTime.now(),
-                medias: [
-                  ChatMedia(
-                    url: downloadURL,
-                    fileName: "",
-                    type: MediaType.image,
-                  )
-                ],
-              );
-              _sendMessage(chatMessage);
-            }
-          }
-        },
+        onPressed: () {},
         icon: const Icon(
           Icons.image,
           color: Color.fromRGBO(17, 117, 51, 51),
@@ -218,42 +239,116 @@ class _ChatPageState extends State<ChatPage> {
           color: Color.fromRGBO(17, 117, 51, 51)),
       constraints: const BoxConstraints.tightFor(width: 50, height: 190),
       color: const Color.fromRGBO(17, 117, 51, 51),
-      onSelected: (String result) {
-        switch (result) {
-          case "camera":
-            _cameraMessageButton();
-            break;
-          case "image":
-            _mediaMessageButton();
-            break;
-          case "gif":
-            // Lógica para seleccionar un gif
-            break;
-          default:
-            break;
-        }
-      },
+      onSelected: (String result) {},
       itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
-        const PopupMenuItem<String>(
+        PopupMenuItem<String>(
           value: "camera",
           child: Icon(
             Icons.camera_alt_rounded,
             color: Colors.white,
           ),
+          onTap: () async {
+            File? file = await _mediaService.getImageFromCamera();
+            if (file != null) {
+              String chatID = generateChatID(
+                uid1: currentUser!.id,
+                uid2: otherUser!.id,
+              );
+              String? downloadURL = await _storageService.uploadImageToChat(
+                  file: file, chatId: chatID);
+
+              if (downloadURL != null) {
+                ChatMessage chatMessage = ChatMessage(
+                  user: currentUser!,
+                  createdAt: DateTime.now(),
+                  medias: [
+                    ChatMedia(
+                      url: downloadURL,
+                      fileName: "",
+                      type: MediaType.image,
+                    )
+                  ],
+                );
+                _sendMessage(chatMessage);
+              }
+            }
+          },
         ),
-        const PopupMenuItem<String>(
+        PopupMenuItem<String>(
           value: "image",
-          child: Icon(
+          child: const Icon(
             Icons.image,
             color: Colors.white,
           ),
+          onTap: () async {
+            File? file = await _mediaService.getImageFromGallery();
+            if (file != null) {
+              String chatID = generateChatID(
+                uid1: currentUser!.id,
+                uid2: otherUser!.id,
+              );
+              String? downloadURL = await _storageService.uploadImageToChat(
+                  file: file, chatId: chatID);
+
+              if (downloadURL != null) {
+                ChatMessage chatMessage = ChatMessage(
+                  user: currentUser!,
+                  createdAt: DateTime.now(),
+                  medias: [
+                    ChatMedia(
+                      url: downloadURL,
+                      fileName: "",
+                      type: MediaType.image,
+                    )
+                  ],
+                );
+                _sendMessage(chatMessage);
+              }
+            }
+          },
         ),
-        const PopupMenuItem<String>(
-          value: "gif",
-          child: Icon(
+        PopupMenuItem<String>(
+          value: 'gif',
+          child: const Icon(
             Icons.gif_box_rounded,
             color: Colors.white,
           ),
+          onTap: () async {
+            final gif = await GiphyPicker.pickGif(
+              title: const Text('Elige el gif'),
+              lang: 'es',
+              context: context,
+              fullScreenDialog: false,
+              showPreviewPage: false,
+              apiKey: '27QECRzAV8AnNukBUE1jt7Jh2B2QUtJC',
+            );
+            print(gif);
+            if (gif != null) {
+              String chatID =
+                  generateChatID(uid1: currentUser!.id, uid2: otherUser!.id);
+              String? downloadURL = await _storageService.uploadGifToChat(
+                  gif: gif, chatId: chatID);
+              if (downloadURL != null) {
+                ChatMessage chatMessage = ChatMessage(
+                  user: currentUser!,
+                  createdAt: DateTime.now(),
+                  medias: [
+                    ChatMedia(
+                      url: downloadURL,
+                      fileName: '',
+                      type: MediaType.gif,
+                    )
+                  ],
+                );
+                _sendMessage(chatMessage);
+              }
+            } else {
+              _alertService.showToast(
+                text: 'No se ha seleccionado ningún gif',
+                icon: Icons.error_outline_rounded,
+              );
+            }
+          },
         ),
       ],
     );
