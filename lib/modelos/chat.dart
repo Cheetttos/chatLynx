@@ -1,5 +1,6 @@
 import 'package:chatlynx/modelos/message.dart';
 
+
 class Chat {
   String? id;
   List<String>? participants;

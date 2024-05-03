@@ -46,6 +46,10 @@ dependencies:
   image_picker: ^0.8.4+4
   path: ^1.9.0
   firebase_storage: ^11.7.2
+  giphy_get: ^3.5.4
+  fab_circular_menu_plus: ^0.0.2
+
+
   
 
 dev_dependencies:
