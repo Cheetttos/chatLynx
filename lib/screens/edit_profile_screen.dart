@@ -29,9 +29,11 @@ class _EditScreenState extends State<EditScreen> {
   late DatabaseService _databaseService;
   late AlertService _alertService;
 
+  String currentUserName = '';
+
   File? selectedImage;
   bool isLoading = false;
-  late TextEditingController _nameController; 
+  final TextEditingController _nameController = TextEditingController();
 
   @override
   void initState() {
@@ -43,8 +45,7 @@ class _EditScreenState extends State<EditScreen> {
     _databaseService = _getIt.get<DatabaseService>();
     _alertService = _getIt.get<AlertService>();
 
-    _nameController = TextEditingController();
-    _nameController.text = "Nombre predefinido";
+    _fetchCurrentUserName();
   }
 
   @override
@@ -186,9 +187,10 @@ class _EditScreenState extends State<EditScreen> {
             children: [
               _pfpSelectionField(),
               TextFormField(
-                controller: _nameController, // Usar el controlador para el nombre
+                controller:
+                    _nameController, // Usar el controlador para el nombre
                 decoration: InputDecoration(
-                  hintText: "Nombre",
+                  hintText: currentUserName,
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -260,7 +262,11 @@ class _EditScreenState extends State<EditScreen> {
       ),
     );
   }
+
+  Future<void> _fetchCurrentUserName() async {
+    String userName = await _databaseService.getCurrentUserName();
+    setState(() {
+      currentUserName = userName;
+    });
+  }
 }
-
-
-
