@@ -47,24 +47,25 @@ class _configScreenState extends State<ConfigScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Align(
-          alignment: Alignment.centerRight,
-          child: Text(
-            "Ajustes",
-            textAlign: TextAlign.right,
-          ),
-        ),
+        title: const Text("Ajustes"),
       ),
       body: Center(
         child: Column(
           children: [
+            // Contenido de la pantalla
             DayNightSwitcher(
               isDarkModeEnabled: AppValueNotifier.banTheme.value,
               onStateChanged: (isDark) {
                 AppValueNotifier.banTheme.value = isDark;
               },
             ),
-            _buildUserInfoWidget()
+            _buildUserInfoWidget(),
+            ElevatedButton(
+              onPressed: () {
+                _navigateToEditScreen(context);
+              },
+              child: const Text('Editar'),
+            ),
           ],
         ),
       ),
@@ -134,5 +135,9 @@ class _configScreenState extends State<ConfigScreen> {
         _currentUserProfilePicUrl = profilePicUrl;
       });
     }
+  }
+
+  void _navigateToEditScreen(BuildContext context) {
+    Navigator.pushNamed(context, '/edit');
   }
 }

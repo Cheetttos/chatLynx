@@ -5,6 +5,7 @@ import 'package:chatlynx/screens/group_screen.dart';
 import 'package:chatlynx/screens/home_screen.dart';
 import 'package:chatlynx/screens/login_screen.dart';
 import 'package:chatlynx/screens/register_screen.dart';
+import 'package:chatlynx/screens/edit_profile_screen.dart';
 import 'package:flutter/material.dart';
 
 class NavigationService {
@@ -14,6 +15,7 @@ class NavigationService {
     "/login": (context) => const LoginScreen(),
     "/home": (context) => const HomeScreen(),
     "/register": (context) => const RegisterScreen(),
+    "/edit": (context) => const EditScreen(),
     "/config": (context) => const ConfigScreen(),
     "/contact": (context) => const ContactScreen(),
     "/group": (context) => const GroupScreen(),
