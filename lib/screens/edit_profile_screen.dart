@@ -245,23 +245,42 @@ class _EditScreenState extends State<EditScreen> {
     }
   }
 
+  Future<void> _updateUserData(String newName, String newProfilePicUrl) async {
+  String? uid = _authService.user?.uid;
+  if (uid != null) {
+    // Actualizar el nombre del usuario
+    await _databaseService.updateUserName(uid, newName);
+
+    // Actualizar la URL de la imagen de perfil del usuario
+    await _databaseService.updateUserProfilePicUrl(uid, newProfilePicUrl);
+  }
+
+  // Navegar de regreso a ConfigScreen
+  Navigator.pop(context, {'name': newName, 'profilePicUrl': newProfilePicUrl});
+}
+
   Widget _registerButton() {
-    return SizedBox(
-      width: MediaQuery.of(context).size.width,
-      child: MaterialButton(
-        color: const Color.fromRGBO(17, 117, 51, 51),
-        onPressed: () async {
-          // Código para guardar los cambios
-        },
-        child: const Text(
-          "Guardar",
-          style: TextStyle(
-            color: Colors.white,
-          ),
+  return SizedBox(
+    width: MediaQuery.of(context).size.width,
+    child: MaterialButton(
+      color: const Color.fromRGBO(17, 117, 51, 51),
+      onPressed: () async {
+        // Obtener el nuevo nombre del usuario y la nueva imagen de perfil
+        String newName = _nameController.text;
+        String newProfilePicUrl = selectedImage != null ? await _storageService.uploadImage(selectedImage!) : '';
+
+        // Actualizar los datos del usuario
+        await _updateUserData(newName, newProfilePicUrl);
+      },
+      child: const Text(
+        "Guardar",
+        style: TextStyle(
+          color: Colors.white,
         ),
       ),
-    );
-  }
+    ),
+  );
+}
 
   Future<void> _fetchCurrentUserName() async {
     String userName = await _databaseService.getCurrentUserName();

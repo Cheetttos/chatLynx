@@ -409,4 +409,5 @@ class DatabaseService {
           .update({'profilePicUrl': newProfilePicUrl});
     }
   }
+  
 }
