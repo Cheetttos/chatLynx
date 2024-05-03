@@ -5,9 +5,11 @@ import 'package:chatlynx/services/auth_service.dart';
 import 'package:chatlynx/utils.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get_it/get_it.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class DatabaseService {
   final FirebaseFirestore _firebaseFirestore = FirebaseFirestore.instance;
+  FirebaseAuth _auth = FirebaseAuth.instance;
 
   late AuthService _authService;
   late GetIt _getIt = GetIt.instance;
@@ -277,7 +279,7 @@ class DatabaseService {
     }
   }*/
 
-  Future<void> addContactToGroup(String email, String groupName) async {
+  /*Future<void> addContactToGroup(String email, String groupName) async {
     try {
       // Si el email está registrado y el contacto no está registrado, proceder a agregarlo
       await _firebaseFirestore
@@ -292,6 +294,71 @@ class DatabaseService {
       rethrow;
     }
 
+  }*/
+
+  Future<void> addContactToGroup(String email, String groupName) async {
+    try {
+      if (_auth.currentUser != null) {
+        String? userId = _auth.currentUser?.uid;
+
+        if (userId != null) {
+          bool hasAccess = await _firebaseFirestore
+              .collection('groups')
+              .doc(groupName)
+              .collection('members')
+              .doc(userId)
+              .get()
+              .then((doc) => doc.exists);
+
+          if (hasAccess) {
+            await _firebaseFirestore
+                .collection('groups')
+                .doc(groupName)
+                .collection('members')
+                .doc(userId)
+                .set({
+              'name': email,
+            });
+          } else {
+            throw Exception('Usuario no autorizado para agregar contactos a este grupo.');
+          }
+        } else {
+          throw Exception('No se pudo obtener el ID del usuario.');
+        }
+      } else {
+        throw Exception('Usuario no autenticado.');
+      }
+    } catch (e) {
+      print('Error al agregar el contacto: $e');
+      rethrow;
+    }
+  }
+
+   Future<List<String>> getGroupsWithAccess() async {
+    try {
+      List<String> groupsWithAccess = [];
+
+      if (_auth.currentUser != null) {
+        String? userId = _auth.currentUser?.uid;
+
+        if (userId != null) {
+          QuerySnapshot groupsSnapshot = await _firebaseFirestore
+              .collection('groups')
+              .where('members.$userId', isEqualTo: true)
+              .get();
+
+          // Agrega los nombres de los grupos a la lista
+          groupsSnapshot.docs.forEach((doc) {
+            groupsWithAccess.add(doc.id);
+          });
+        }
+      }
+
+      return groupsWithAccess;
+    } catch (e) {
+      print('Error al obtener los grupos con acceso: $e');
+      rethrow;
+    }
   }
 
   Future<void> deleteGroup(String groupName) async {
