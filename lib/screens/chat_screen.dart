@@ -84,7 +84,7 @@ class _ChatPageState extends State<ChatPage> {
               String callName =
                   generateChatID(uid1: currentUser!.id, uid2: otherUser!.id);
 
-              await _navigationService.push(
+              _navigationService.push(
                 MaterialPageRoute(
                   builder: (context) => VideoCallScreen(
                     channelName: callName,

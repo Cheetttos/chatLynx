@@ -1,3 +1,5 @@
+import 'dart:js_interop_unsafe';
+
 import 'package:chatlynx/modelos/chat.dart';
 import 'package:chatlynx/modelos/message.dart';
 import 'package:chatlynx/modelos/user_profile.dart';
@@ -413,6 +415,33 @@ class DatabaseService {
       String currentUserId, String contactId) async {
     String channelName = 'videocall_$currentUserId$contactId';
     return channelName;
+  }
+
+  Future<void> sendCallNotification({
+    required String recipientId,
+    required String channelName,
+    required String callerName,
+    required String callerProfilePicture,
+  }) async {
+    try {
+      // Enviar la notificación al usuario destinatario
+      // Puedes utilizar Firebase Cloud Messaging (FCM) o cualquier otro servicio de notificaciones push
+      // Aquí está un ejemplo de cómo se haría con FCM:
+      final message = <String, dynamic>{
+        'data': <String, dynamic>{
+          'channelName': channelName,
+          'callerName': callerName,
+          'callerProfilePicture': callerProfilePicture,
+        },
+        'to':
+            recipientId, // El token de registro del dispositivo del destinatario
+      };
+
+      //await FirebaseMessaging.instance.sendMessage(message);
+      
+    } catch (e) {
+      print('Error al enviar la notificación de llamada entrante: $e');
+    }
   }
 
   /*Future<List<UserProfile>> getParticipantProfiles(

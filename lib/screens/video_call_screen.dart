@@ -38,6 +38,8 @@ class _VideoCallScreenState extends State<VideoCallScreen> {
       ),
     );
     await _client.initialize();
+
+    
   }
 
   @override
