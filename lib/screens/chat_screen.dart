@@ -16,6 +16,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dash_chat_2/dash_chat_2.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:giphy_picker/giphy_picker.dart';
 //import 'package:giphy_picker/giphy_picker.dart';
 import 'package:path/path.dart';
 
