@@ -245,23 +245,57 @@ class _EditScreenState extends State<EditScreen> {
     }
   }
 
+  Future<void> _updateUserData(String newName, String newProfilePicUrl) async {
+  String? uid = _authService.user?.uid;
+  if (uid != null) {
+    // Verificar si se seleccionó una imagen nueva o si el nombre cambió
+    if (newName != currentUserName || newProfilePicUrl.isNotEmpty) {
+      // Actualizar el nombre del usuario si cambió
+      if (newName != currentUserName) {
+        await _databaseService.updateUserName(uid, newName);
+      }
+
+      // Actualizar la URL de la imagen de perfil del usuario si se seleccionó una nueva imagen
+      if (newProfilePicUrl.isNotEmpty) {
+        await _databaseService.updateUserProfilePicUrl(uid, newProfilePicUrl);
+      }
+    }
+
+    // Si no se hicieron cambios, enviar los datos actuales
+    else {
+      newName = currentUserName;
+      newProfilePicUrl = await _storageService.getUserProfilePicUrl(uid) ?? '';
+    }
+
+    // Navegar de regreso a ConfigScreen
+    Navigator.pop(context, {'name': newName, 'profilePicUrl': newProfilePicUrl});
+  }
+}
+
+
+
   Widget _registerButton() {
-    return SizedBox(
-      width: MediaQuery.of(context).size.width,
-      child: MaterialButton(
-        color: const Color.fromRGBO(17, 117, 51, 51),
-        onPressed: () async {
-          // Código para guardar los cambios
-        },
-        child: const Text(
-          "Guardar",
-          style: TextStyle(
-            color: Colors.white,
-          ),
+  return SizedBox(
+    width: MediaQuery.of(context).size.width,
+    child: MaterialButton(
+      color: const Color.fromRGBO(17, 117, 51, 51),
+      onPressed: () async {
+        // Obtener el nuevo nombre del usuario y la nueva imagen de perfil
+        String newName = _nameController.text;
+        String newProfilePicUrl = selectedImage != null ? await _storageService.uploadImage(selectedImage!) : '';
+
+        // Actualizar los datos del usuario
+        await _updateUserData(newName, newProfilePicUrl);
+      },
+      child: const Text(
+        "Guardar",
+        style: TextStyle(
+          color: Colors.white,
         ),
       ),
-    );
-  }
+    ),
+  );
+}
 
   Future<void> _fetchCurrentUserName() async {
     String userName = await _databaseService.getCurrentUserName();

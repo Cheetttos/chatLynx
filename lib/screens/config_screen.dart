@@ -53,12 +53,12 @@ class _configScreenState extends State<ConfigScreen> {
         child: Column(
           children: [
             // Contenido de la pantalla
-            DayNightSwitcher(
+            /*DayNightSwitcher(
               isDarkModeEnabled: AppValueNotifier.banTheme.value,
               onStateChanged: (isDark) {
                 AppValueNotifier.banTheme.value = isDark;
               },
-            ),
+            ),*/
             _buildUserInfoWidget(),
             ElevatedButton(
               onPressed: () {
@@ -137,7 +137,16 @@ class _configScreenState extends State<ConfigScreen> {
     }
   }
 
-  void _navigateToEditScreen(BuildContext context) {
-    Navigator.pushNamed(context, '/edit');
+  void _navigateToEditScreen(BuildContext context) async {
+  final result = await Navigator.pushNamed(context, '/edit');
+
+  // Actualizar los datos en la pantalla de configuración con los datos actualizados
+  if (result != null && result is Map<String, String>) {
+    setState(() {
+      currentUserName = result['name'] ?? currentUserName;
+      _currentUserProfilePicUrl = result['profilePicUrl'] ?? _currentUserProfilePicUrl;
+    });
   }
+}
+
 }

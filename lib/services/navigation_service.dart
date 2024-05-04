@@ -16,7 +16,7 @@ class NavigationService {
     "/login": (context) => const LoginScreen(),
     "/home": (context) => const HomeScreen(),
     "/register": (context) => const RegisterScreen(),
-    "/edit": (context) => const EditScreen(),
+    '/edit': (context) => const EditScreen(),
     "/config": (context) => const ConfigScreen(),
     "/contact": (context) => const ContactScreen(),
     "/group": (context) => const GroupScreen(),
