@@ -1,6 +1,8 @@
 import 'package:agora_uikit/agora_uikit.dart';
 import 'package:flutter/material.dart';
 
+import '../services/database_service.dart';
+
 class VideoCallScreen extends StatefulWidget {
   final String channelName;
   final List<String> participantIds;
@@ -21,7 +23,7 @@ class VideoCallScreen extends StatefulWidget {
 
 class _VideoCallScreenState extends State<VideoCallScreen> {
   late final AgoraClient _client;
-
+final DatabaseService _databaseService = DatabaseService();
   @override
   void initState() {
     super.initState();
@@ -39,7 +41,13 @@ class _VideoCallScreenState extends State<VideoCallScreen> {
     );
     await _client.initialize();
 
-    
+    // Enviar notificación de llamada entrante al otro usuario
+    await _databaseService.sendCallNotification(
+      recipientId: widget.participantIds[1],
+      channelName: widget.channelName,
+      callerName: widget.participantNames[0],
+      callerProfilePicture: widget.participantProfilePictures[0],
+    );
   }
 
   @override
@@ -58,7 +66,6 @@ class _VideoCallScreenState extends State<VideoCallScreen> {
               AgoraVideoViewer(
                 client: _client,
                 layoutType: Layout.floating,
-                showNumberOfUsers: true,
               ),
               AgoraVideoButtons(
                 client: _client,

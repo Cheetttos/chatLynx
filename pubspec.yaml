@@ -51,10 +51,15 @@ dependencies:
   rive: ^0.7.16
   giphy_picker: ^3.0.2
   flutter_cache_manager: ^3.3.0
-  agora_rtc_engine: 
-  permission_handler: 
+  agora_rtc_engine: ^6.3.0
+  permission_handler: ^11.3.1
   flutter_webrtc: ^0.10.3
   agora_uikit: ^1.0.0-beta
+  firebase_messaging: ^14.9.1
+  flutter_bloc: ^8.1.5
+  equatable: ^2.0.5
+  shared_preferences: ^2.2.3
+  bloc: ^8.1.4
 
 dev_dependencies:
   flutter_test:

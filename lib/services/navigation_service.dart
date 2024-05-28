@@ -1,5 +1,4 @@
 import 'package:chatlynx/screens/config_screen.dart';
-import 'package:chatlynx/screens/contact_list_screen.dart';
 import 'package:chatlynx/screens/contacts_screen.dart';
 import 'package:chatlynx/screens/group_screen.dart';
 import 'package:chatlynx/screens/home_screen.dart';
@@ -8,6 +7,9 @@ import 'package:chatlynx/screens/register_screen.dart';
 import 'package:chatlynx/screens/edit_profile_screen.dart';
 import 'package:chatlynx/screens/video_call_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:chatlynx/api/firebase_api.dart';
+
+import '../screens/notification_screen.dart';
 
 class NavigationService {
   late GlobalKey<NavigatorState> _navigatorKey;
@@ -20,6 +22,7 @@ class NavigationService {
     "/config": (context) => const ConfigScreen(),
     "/contact": (context) => const ContactScreen(),
     "/group": (context) => const GroupScreen(),
+    NotificationScreen.route: (context) => const NotificationScreen(),
   };
 
   Future<void> pushVideoCall({

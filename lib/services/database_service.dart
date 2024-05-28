@@ -1,20 +1,19 @@
-import 'dart:js_interop_unsafe';
-
 import 'package:chatlynx/modelos/chat.dart';
 import 'package:chatlynx/modelos/message.dart';
 import 'package:chatlynx/modelos/user_profile.dart';
 import 'package:chatlynx/services/auth_service.dart';
 import 'package:chatlynx/utils.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:get_it/get_it.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class DatabaseService {
   final FirebaseFirestore _firebaseFirestore = FirebaseFirestore.instance;
-  FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
 
   late AuthService _authService;
-  late GetIt _getIt = GetIt.instance;
+  final GetIt _getIt = GetIt.instance;
 
   CollectionReference? _usersCollection;
   CollectionReference? _chatsCollection;
@@ -437,8 +436,7 @@ class DatabaseService {
             recipientId, // El token de registro del dispositivo del destinatario
       };
 
-      //await FirebaseMessaging.instance.sendMessage(message);
-      
+      FirebaseMessaging.instance;
     } catch (e) {
       print('Error al enviar la notificación de llamada entrante: $e');
     }
@@ -456,5 +454,4 @@ class DatabaseService {
 
     return participants;
   }*/
-  
 }
