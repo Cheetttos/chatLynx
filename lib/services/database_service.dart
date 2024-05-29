@@ -1,4 +1,4 @@
-import 'dart:js_interop_unsafe';
+//import 'dart:js_interop_unsafe';
 
 import 'package:chatlynx/modelos/chat.dart';
 import 'package:chatlynx/modelos/message.dart';
@@ -52,6 +52,20 @@ class DatabaseService {
     return _usersCollection!
         .orderBy("mensajes.${_authService.user!.uid}", descending: true)
         .snapshots() as Stream<QuerySnapshot<UserProfile>>;
+  }
+
+  Future<void> editGroup(String oldName, String newName) async {
+    try {
+      // Obtenemos la referencia al documento del grupo que queremos editar
+      final groupRef = FirebaseFirestore.instance.collection('groups').doc(oldName);
+
+      // Actualizamos el nombre del grupo con el nuevo nombre
+      await groupRef.update({'name': newName});
+    } catch (e) {
+      // Manejar cualquier error que pueda ocurrir durante la edición del grupo
+      print('Error al editar el grupo: $e');
+      throw Exception('Error al editar el grupo');
+    }
   }
 
   Future<bool> checkChatExists(String uid1, String uid2) async {

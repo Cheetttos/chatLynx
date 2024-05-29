@@ -51,24 +51,29 @@ class _GroupScreenState extends State<GroupScreen> {
               itemBuilder: (context, index) {
                 final groupName = groups[index];
                 return ListTile(
-                  title: Text(groupName),
-                  trailing: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      IconButton(
-                        onPressed: () => _showDeleteGroupDialog(groupName),
-                        icon: const Icon(Icons.delete),
-                      ),
-                      IconButton(
-                        onPressed: () => _showAddContactDialog(groupName),
-                        icon: const Icon(Icons.person_add),
-                      ),
-                    ],
-                  ),
-                  onTap: () {
-                    // Aquí puedes agregar la lógica para navegar a la pantalla del grupo
-                  },
-                );
+  title: Text(groupName),
+  trailing: Row(
+    mainAxisSize: MainAxisSize.min,
+    children: [
+      IconButton(
+        onPressed: () => _showEditGroupDialog(groupName), // Función para mostrar el diálogo de edición
+        icon: const Icon(Icons.edit), // Icono de editar
+      ),
+      IconButton(
+        onPressed: () => _showDeleteGroupDialog(groupName),
+        icon: const Icon(Icons.delete),
+      ),
+      IconButton(
+        onPressed: () => _showAddContactDialog(groupName),
+        icon: const Icon(Icons.person_add),
+      ),
+    ],
+  ),
+  onTap: () {
+    // Aquí puedes agregar la lógica para navegar a la pantalla del grupo
+  },
+);
+
               },
             );
           }
@@ -88,6 +93,48 @@ class _GroupScreenState extends State<GroupScreen> {
       ),
     );
   }
+
+  void _showEditGroupDialog(String groupName) {
+  TextEditingController nameController = TextEditingController(text: groupName);
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: const Text('Editar grupo'),
+        content: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              TextField(
+                controller: nameController,
+                decoration: const InputDecoration(
+                  labelText: 'Nuevo nombre',
+                ),
+              ),
+            ],
+          ),
+        ),
+        actions: <Widget>[
+          TextButton(
+            child: const Text('Cancelar'),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+          TextButton(
+            child: const Text('Guardar'),
+            onPressed: () async {
+              String newName = nameController.text.trim();
+              await _databaseService.editGroup(groupName, newName); // Función para editar el grupo
+              Navigator.of(context).pop();
+            },
+          ),
+        ],
+      );
+    },
+  );
+}
+
 
   void _showAddContactDialog(String groupName) {
     TextEditingController emailController = TextEditingController();

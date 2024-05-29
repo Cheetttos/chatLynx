@@ -334,11 +334,11 @@ class _ChatPageState extends State<ChatPage> {
                   user: currentUser!,
                   createdAt: DateTime.now(),
                   medias: [
-                    ChatMedia(
+                    /*ChatMedia(
                       url: downloadURL,
                       fileName: '',
                       type: MediaType.gif,
-                    )
+                    )*/
                   ],
                 );
                 _sendMessage(chatMessage);
