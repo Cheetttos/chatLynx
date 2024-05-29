@@ -1,5 +1,6 @@
 import 'package:chatlynx/modelos/chat.dart';
 import 'package:chatlynx/modelos/user_profile.dart';
+import 'package:chatlynx/screens/add_group.dart';
 import 'package:chatlynx/screens/chat_screen.dart';
 import 'package:chatlynx/screens/config_screen.dart';
 import 'package:chatlynx/screens/contact_list_screen.dart';
@@ -113,7 +114,7 @@ class _HomeScreenState extends State<HomeScreen> {
             index: _selectedIndex,
             children: [
               _chatsList(),
-              const GroupScreen(),
+              const AddGroupScreen(),
               const ContactsListScreen(),
               const ConfigScreen()
             ],
