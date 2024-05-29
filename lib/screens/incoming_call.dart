@@ -1,6 +1,7 @@
 import 'package:agora_uikit/agora_uikit.dart';
 import 'package:chatlynx/screens/video_call_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:chatlynx/incoming_call_channel.dart';
 
 class IncomingCallScreen extends StatefulWidget {
   final String channelName;
@@ -20,11 +21,24 @@ class IncomingCallScreen extends StatefulWidget {
 
 class _IncomingCallScreenState extends State<IncomingCallScreen> {
   late final AgoraClient _client;
-
+  late String callerName;
+  late String callerProfilePicture;
+  late String channelName;
+  
   @override
   void initState() {
     super.initState();
     _initAgora();
+    _getIncomingCallData();
+  }
+
+  Future<void> _getIncomingCallData() async {
+    final data = await IncomingCallChannel.getIncomingCallData();
+    setState(() {
+      callerName = data['callerName'] ?? '';
+      callerProfilePicture = data['callerProfilePicture'] ?? '';
+      channelName = data['channelName'] ?? '';
+    });
   }
 
   Future<void> _initAgora() async {

@@ -1,9 +1,12 @@
 import 'package:chatlynx/modelos/user_profile.dart';
+import 'package:chatlynx/screens/add_group.dart';
+import 'package:chatlynx/screens/chat_group_screen.dart';
 import 'package:chatlynx/screens/chat_screen.dart';
 import 'package:chatlynx/services/alert_service.dart';
 import 'package:chatlynx/services/auth_service.dart';
 import 'package:chatlynx/services/database_service.dart';
 import 'package:chatlynx/services/navigation_service.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 
@@ -36,7 +39,7 @@ class _GroupScreenState extends State<GroupScreen> {
       appBar: AppBar(
         title: const Text('Grupos'),
       ),
-      body: StreamBuilder<List<String>>(
+      body: StreamBuilder<QuerySnapshot>(
         stream: _databaseService.getUserGroups(_authService.user!.uid),
         builder: (context, snapshot) {
           if (snapshot.hasError) {
@@ -47,33 +50,16 @@ class _GroupScreenState extends State<GroupScreen> {
           if (snapshot.hasData && snapshot.data != null) {
             final groups = snapshot.data!;
             return ListView.builder(
-              itemCount: groups.length,
+              itemCount: snapshot.data!.docs.length,
               itemBuilder: (context, index) {
-                final groupName = groups[index];
+                final groupName = snapshot.data!.docs[index].get('groupName');
                 return ListTile(
-  title: Text(groupName),
-  trailing: Row(
-    mainAxisSize: MainAxisSize.min,
-    children: [
-      IconButton(
-        onPressed: () => _showEditGroupDialog(groupName), // Función para mostrar el diálogo de edición
-        icon: const Icon(Icons.edit), // Icono de editar
-      ),
-      IconButton(
-        onPressed: () => _showDeleteGroupDialog(groupName),
-        icon: const Icon(Icons.delete),
-      ),
-      IconButton(
-        onPressed: () => _showAddContactDialog(groupName),
-        icon: const Icon(Icons.person_add),
-      ),
-    ],
-  ),
-  onTap: () {
-    // Aquí puedes agregar la lógica para navegar a la pantalla del grupo
-  },
-);
-
+                  title: Text(groupName),
+                  onTap: () {
+                    Navigator.of(context).push(MaterialPageRoute(builder: (context) => ConversationGroupsScreen(groupData: snapshot.data!.docs[index],),));
+                    // Aquí puedes agregar la lógica para navegar a la pantalla del grupo
+                  },
+                );
               },
             );
           }
@@ -83,8 +69,9 @@ class _GroupScreenState extends State<GroupScreen> {
         },
       ),
       floatingActionButton: FloatingActionButton.extended(
+        heroTag: 'btn2',
         onPressed: () {
-          _showAddGroupDialog();
+          Navigator.of(context).push(MaterialPageRoute(builder: (context) => const AddGroupScreen(),));
         },
         backgroundColor: const Color.fromRGBO(17, 117, 51, 51),
         label: const Text('Nuevo grupo'),
@@ -95,46 +82,47 @@ class _GroupScreenState extends State<GroupScreen> {
   }
 
   void _showEditGroupDialog(String groupName) {
-  TextEditingController nameController = TextEditingController(text: groupName);
-  showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return AlertDialog(
-        title: const Text('Editar grupo'),
-        content: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              TextField(
-                controller: nameController,
-                decoration: const InputDecoration(
-                  labelText: 'Nuevo nombre',
+    TextEditingController nameController =
+        TextEditingController(text: groupName);
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Editar grupo'),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                TextField(
+                  controller: nameController,
+                  decoration: const InputDecoration(
+                    labelText: 'Nuevo nombre',
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-        ),
-        actions: <Widget>[
-          TextButton(
-            child: const Text('Cancelar'),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-          ),
-          TextButton(
-            child: const Text('Guardar'),
-            onPressed: () async {
-              String newName = nameController.text.trim();
-              await _databaseService.editGroup(groupName, newName); // Función para editar el grupo
-              Navigator.of(context).pop();
-            },
-          ),
-        ],
-      );
-    },
-  );
-}
-
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Cancelar'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: const Text('Guardar'),
+              onPressed: () async {
+                String newName = nameController.text.trim();
+                await _databaseService.editGroup(
+                    groupName, newName); // Función para editar el grupo
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   void _showAddContactDialog(String groupName) {
     TextEditingController emailController = TextEditingController();

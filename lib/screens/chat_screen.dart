@@ -20,6 +20,8 @@ import 'package:giphy_picker/giphy_picker.dart';
 //import 'package:giphy_picker/giphy_picker.dart';
 import 'package:path/path.dart';
 
+import '../services/notification_service.dart';
+
 class ChatPage extends StatefulWidget {
   final UserProfile chatUser;
 
@@ -32,6 +34,38 @@ class ChatPage extends StatefulWidget {
 class _ChatPageState extends State<ChatPage> {
   final GetIt _getIt = GetIt.instance;
 
+  Future<void> _makeVideoCall() async {
+    String callName = generateChatID(uid1: currentUser!.id, uid2: otherUser!.id);
+
+    // Enviar notificación de llamada entrante al usuario B
+    await _notificationService.sendCallNotification(
+      receiverUserId: otherUser!.id,
+      callerName: currentUser!.firstName ?? '',
+      callerProfilePicture: currentUser!.profileImage ?? '',
+      channelName: callName,
+    );
+
+    // Abrir la pantalla de videollamada para el usuario A
+    _navigationService.push(
+      MaterialPageRoute(
+        builder: (context) => VideoCallScreen(
+          channelName: callName,
+          participantIds: [currentUser!.id, otherUser!.id],
+          participantNames: [
+            currentUser!.firstName ?? 'Usuario actual',
+            otherUser!.firstName ?? 'Otro usuario'
+          ],
+          participantProfilePictures: [
+            currentUser!.profileImage ??
+                'https://example.com/default-profile-picture.png',
+            otherUser!.profileImage ??
+                'https://example.com/default-profile-picture.png'
+          ],
+        ),
+      ),
+    );
+  }
+
   ChatUser? currentUser, otherUser;
 
   late AuthService _authService;
@@ -40,6 +74,7 @@ class _ChatPageState extends State<ChatPage> {
   late StorageService _storageService;
   late AlertService _alertService;
   late NavigationService _navigationService;
+  late NotificationService _notificationService;
   final WebRTCService _webrtcService = WebRTCService();
   String callName = '';
 
@@ -103,7 +138,10 @@ class _ChatPageState extends State<ChatPage> {
                   ),
                 ),
               );
-            },
+            }
+            
+
+            ,
             icon: const Icon(Icons.video_chat),
           )
         ],

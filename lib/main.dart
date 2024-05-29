@@ -1,7 +1,9 @@
+import 'package:chatlynx/api/firebase_api.dart';
 import 'package:chatlynx/services/auth_service.dart';
 import 'package:chatlynx/services/navigation_service.dart';
 import 'package:chatlynx/settings/app_value_notifier.dart';
 import 'package:chatlynx/utils.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -15,6 +17,11 @@ Future<void> setup() async {
   WidgetsFlutterBinding.ensureInitialized();
   await setupFirebase();
   await registerServices();
+  await Firebase.initializeApp();
+  final navigationService = GetIt.instance
+      .get<NavigationService>(); // Obtén la instancia de NavigationService
+  await FirebaseApi(navigationService)
+      .initNotifications(); // Pasa la instancia de NavigationService al constructor de FirebaseApi
 }
 
 // ignore: must_be_immutable
