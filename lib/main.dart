@@ -17,7 +17,8 @@ Future<void> setup() async {
   WidgetsFlutterBinding.ensureInitialized();
   await setupFirebase();
   await registerServices();
-  await Firebase.initializeApp();
+  await Firebase.initializeApp(
+  );
   final navigationService = GetIt.instance
       .get<NavigationService>(); // Obtén la instancia de NavigationService
   await FirebaseApi(navigationService)

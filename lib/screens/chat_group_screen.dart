@@ -2,7 +2,9 @@ import 'dart:io';
 
 import 'package:chatlynx/screens/image_view_screen.dart';
 import 'package:chatlynx/screens/video_player_screen.dart';
+import 'package:chatlynx/services/auth_service.dart';
 import 'package:chatlynx/services/groups_firestore.dart';
+import 'package:chatlynx/services/messages_firestore.dart';
 import 'package:chatlynx/services/users_services.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -29,13 +31,16 @@ class ConversationGroupsScreen extends StatefulWidget {
 class _ConversationGroupsScreenState extends State<ConversationGroupsScreen> {
   final TextEditingController _messageController = TextEditingController();
   final UsersFirestore usersFirestore = UsersFirestore();
-  //final MessagesFireStore messagesFireStore = MessagesFireStore();
+  final MessagesFireStore messagesFireStore = MessagesFireStore();
   String userId = FirebaseAuth.instance.currentUser!.uid;
   String? nameCurrent = FirebaseAuth.instance.currentUser!.displayName;
   final ScrollController _scrollController = ScrollController();
   GroupsFirestore groups = GroupsFirestore();
   List<Map<String, dynamic>> _availableContacts = [];
   final List<Map<String, dynamic>> _selectedContacts = [];
+
+  String? userName = FirebaseAuth.instance.currentUser!.displayName;
+
 
   @override
   void initState() {
@@ -65,7 +70,7 @@ class _ConversationGroupsScreenState extends State<ConversationGroupsScreen> {
       File imageFile = File(pickedImage.path);
       // Subimos a almacenamiento de Storage
       Reference ref =
-          FirebaseStorage.instanceFor(bucket: "gs://chat-82a68.appspot.com")
+          FirebaseStorage.instanceFor(bucket: "gs://chatlynx-a3ff7.appspot.com")
               .ref()
               .child('images/${DateTime.now().millisecondsSinceEpoch}.jpg');
       UploadTask uploadTask = ref.putFile(imageFile);
@@ -76,7 +81,7 @@ class _ConversationGroupsScreenState extends State<ConversationGroupsScreen> {
 
       Map<String, dynamic> data = {
         'message': imageUrl,
-        'senderUserName': nameCurrent,
+        'senderUserName': userName,
         'hora': DateTime.now(),
         'senderId': userId,
         'type': 'image'
@@ -95,7 +100,7 @@ class _ConversationGroupsScreenState extends State<ConversationGroupsScreen> {
       File imageFile = File(pickedImage.path);
       // Subimos a almacenamiento de Storage
       Reference ref =
-          FirebaseStorage.instanceFor(bucket: "gs://chat-82a68.appspot.com")
+          FirebaseStorage.instanceFor(bucket: "gs://chatlynx-a3ff7.appspot.com")
               .ref()
               .child('images/${DateTime.now().millisecondsSinceEpoch}.jpg');
       UploadTask uploadTask = ref.putFile(imageFile);
@@ -106,7 +111,7 @@ class _ConversationGroupsScreenState extends State<ConversationGroupsScreen> {
 
       Map<String, dynamic> data = {
         'message': imageUrl,
-        'senderUserName': nameCurrent,
+        'senderUserName': userName,
         'hora': DateTime.now(),
         'senderId': userId,
         'type': 'image'
@@ -137,7 +142,7 @@ class _ConversationGroupsScreenState extends State<ConversationGroupsScreen> {
 
       Map<String, dynamic> data = {
         'message': videoUrl,
-        'senderUserName': nameCurrent,
+        'senderUserName': userName,
         'hora': DateTime.now(),
         'senderId': userId,
         'type': 'video'
@@ -168,7 +173,7 @@ class _ConversationGroupsScreenState extends State<ConversationGroupsScreen> {
 
       Map<String, dynamic> data = {
         'message': videoUrl,
-        'senderUserName': nameCurrent,
+        'senderUserName': userName,
         'hora': DateTime.now(),
         'senderId': userId,
         'type': 'video'
@@ -204,7 +209,7 @@ class _ConversationGroupsScreenState extends State<ConversationGroupsScreen> {
 
       Map<String, dynamic> data = {
         'message': uploadedGifUrl,
-        'senderUserName': nameCurrent,
+        'senderUserName': userName,
         'hora': DateTime.now(),
         'senderId': userId,
         'type': 'gif'

@@ -72,7 +72,7 @@ class _GroupsWidgetState extends State<GroupsWidget> {
                   child: Text(
                     widget.groupData!["groupName"],
                     style: GoogleFonts.poppins(
-                      color: Colors.white,
+                      color: Colors.black,
                       fontSize: 13,
                       fontWeight: FontWeight.w500,
                       height: 0.06,
