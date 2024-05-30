@@ -119,8 +119,8 @@ class _HomeScreenState extends State<HomeScreen> {
               child: IndexedStack(
             index: _selectedIndex,
             children: [
-              _chatsList(),
-              buildGroupList(_authService.user!.uid),
+             _chatsList(),
+            buildGroupList(_authService.user!.uid),
               const ContactsListScreen(),
               const ConfigScreen()
             ],
