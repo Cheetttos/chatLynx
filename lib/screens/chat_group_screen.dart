@@ -798,7 +798,7 @@ class _ConversationGroupsScreenState extends State<ConversationGroupsScreen> {
                                   );
                                 },
                               ),
-                              /*IconButton(
+                              IconButton(
                                 icon: const Icon(Icons.camera),
                                 onPressed: () {
                                   showModalBottomSheet(
@@ -843,7 +843,7 @@ class _ConversationGroupsScreenState extends State<ConversationGroupsScreen> {
                                     },
                                   );
                                 },
-                              ),*/
+                              ),
                             ],
                           ),
                         ],
