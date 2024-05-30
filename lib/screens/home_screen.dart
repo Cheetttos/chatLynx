@@ -120,7 +120,8 @@ class _HomeScreenState extends State<HomeScreen> {
             index: _selectedIndex,
             children: [
              _chatsList(),
-            buildGroupList(_authService.user!.uid),
+            //buildGroupList(_authService.user!.uid),
+            const GroupScreen(),
               const ContactsListScreen(),
               const ConfigScreen()
             ],

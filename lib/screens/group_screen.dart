@@ -27,6 +27,8 @@ class _GroupScreenState extends State<GroupScreen> {
   late NavigationService _navigationService;
   late AlertService _alertService;
 
+  final GroupsFirestore groups = GroupsFirestore();
+
   @override
   void initState() {
     super.initState();
@@ -44,8 +46,7 @@ class _GroupScreenState extends State<GroupScreen> {
         title: const Text('Grupos'),
       ),
       body: StreamBuilder<QuerySnapshot>(
-        stream: _databaseService.getUserGroups(_authService.user!.uid),
-        //stream: groups.getGroups(),
+        stream: groups.getGroups(),
         builder: (context, snapshot) {
           if (snapshot.hasError) {
             return const Center(
@@ -59,6 +60,7 @@ class _GroupScreenState extends State<GroupScreen> {
               itemBuilder: (context, index) {
                 final groupName = snapshot.data!.docs[index].get('groupName');
                 return ListTile(
+                  leading: Icon(Icons.group, color: Colors.black),
                   title: Text(
                     groupName,
                     style: TextStyle(color: Colors.black),
@@ -94,3 +96,4 @@ class _GroupScreenState extends State<GroupScreen> {
     );
   }
 }
+
