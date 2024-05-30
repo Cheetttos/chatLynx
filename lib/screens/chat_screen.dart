@@ -114,8 +114,8 @@ class _ChatPageState extends State<ChatPage> {
           widget.chatUser.name!,
         ),
         actions: <Widget>[
-          IconButton(onPressed: () {}, icon: const Icon(Icons.call)),
-          IconButton(
+          //IconButton(onPressed: () {}, icon: const Icon(Icons.call)),
+          /*IconButton(
             onPressed: () async {
               String callName =
                   generateChatID(uid1: currentUser!.id, uid2: otherUser!.id);
@@ -142,8 +142,8 @@ class _ChatPageState extends State<ChatPage> {
             
 
             ,
-            icon: const Icon(Icons.video_chat),
-          )
+            //icon: const Icon(Icons.video_chat),
+          )*/
         ],
       ),
       body: _buildUI(),

@@ -99,8 +99,8 @@ class _ContactsListScreenState extends State<ContactsListScreen> {
                         },
                         icon: const Icon(Icons.chat),
                       ),
-                      IconButton(
-                          onPressed: () {}, icon: const Icon(Icons.videocam)),
+                      /*IconButton(
+                          onPressed: () {}, icon: const Icon(Icons.videocam)),*/
                     ],
                   ),
                 );
