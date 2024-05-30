@@ -755,7 +755,7 @@ class _ConversationGroupsScreenState extends State<ConversationGroupsScreen> {
                           ),
                           Row(
                             children: [
-                              /*IconButton(
+                              IconButton(
                                 icon: const Icon(Icons.attach_file_rounded),
                                 onPressed: () {
                                   showMenu(
@@ -764,7 +764,7 @@ class _ConversationGroupsScreenState extends State<ConversationGroupsScreen> {
                                     position: const RelativeRect.fromLTRB(
                                         110, 680, 80, 0),
                                     items: [
-                                      /*PopupMenuItem(
+                                      PopupMenuItem(
                                         child: ListTile(
                                           leading: const Icon(
                                               Icons.video_camera_back_rounded),
@@ -777,8 +777,8 @@ class _ConversationGroupsScreenState extends State<ConversationGroupsScreen> {
                                             showVideoOptions();
                                           },
                                         ),
-                                      ),*/
-                                      /*PopupMenuItem(
+                                      ),
+                                      PopupMenuItem(
                                         child: ListTile(
                                           leading:
                                               const Icon(Icons.gif_box_rounded),
@@ -791,13 +791,13 @@ class _ConversationGroupsScreenState extends State<ConversationGroupsScreen> {
                                             _pickGif();
                                           },
                                         ),
-                                      ),*/
+                                      ),
                                       // Agrega más opciones según sea necesario
                                     ],
                                     elevation: 8,
                                   );
                                 },
-                              ),*/
+                              ),
                               /*IconButton(
                                 icon: const Icon(Icons.camera),
                                 onPressed: () {
