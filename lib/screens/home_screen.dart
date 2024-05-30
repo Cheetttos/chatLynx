@@ -9,13 +9,16 @@ import 'package:chatlynx/screens/group_screen.dart';
 import 'package:chatlynx/services/alert_service.dart';
 import 'package:chatlynx/services/auth_service.dart';
 import 'package:chatlynx/services/database_service.dart';
+import 'package:chatlynx/services/groups_firestore.dart';
 import 'package:chatlynx/services/navigation_service.dart';
 import 'package:chatlynx/services/storage_service.dart';
 import 'package:chatlynx/widgets/chat_tile.dart';
+import 'package:chatlynx/widgets/groups_widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get_it/get_it.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -37,16 +40,20 @@ class _HomeScreenState extends State<HomeScreen> {
   String currentUserName = '';
   String? _currentUserProfilePicUrl;
 
+  final GroupsFirestore groups = GroupsFirestore();
+
   void _selectedOptionItemBottomNavigation(int index) {
     setState(() {
       _selectedIndex = index;
-      /*if (_selectedIndex == 1) {
-      _navigationService.pushReplacementNamed("/group");
-    }*/
     });
   }
 
-  //filtrar contactos de chats
+  List<Widget> _buildWidgetOptions(String currentUid) {
+    return <Widget>[
+      buildGroupList(currentUid),
+    ];
+  }
+
   final TextEditingController _searchController = TextEditingController();
   List<Chat> filteredChats = [];
   List<Chat> chats = [];
@@ -74,7 +81,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _authService = _getIt.get<AuthService>();
     _navigationService = _getIt.get<NavigationService>();
@@ -114,8 +120,7 @@ class _HomeScreenState extends State<HomeScreen> {
             index: _selectedIndex,
             children: [
               _chatsList(),
-              const GroupScreen(),
-              //const AddGroupScreen(),
+              buildGroupList(_authService.user!.uid),
               const ContactsListScreen(),
               const ConfigScreen()
             ],
@@ -148,7 +153,7 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       floatingActionButton: _selectedIndex == 0
           ? FloatingActionButton.extended(
-            heroTag: 'btn1',
+              heroTag: 'btn1',
               onPressed: () {
                 _navigationService.push(MaterialPageRoute(
                     builder: (context) => const ContactScreen()));
@@ -158,16 +163,7 @@ class _HomeScreenState extends State<HomeScreen> {
               icon: const Icon(Icons.chat),
               foregroundColor: Colors.white,
             )
-          : /*_selectedIndex == 2
-              ? FloatingActionButton.extended(
-                  onPressed: _showAddContactDialog,
-                  backgroundColor: const Color.fromRGBO(17, 117, 51, 51),
-                  label: const Text('Nuevo contacto'),
-                  icon: const Icon(Icons.add),
-                  foregroundColor: Colors.white,
-                )
-              */
-          null,
+          : null,
     );
   }
 
@@ -309,4 +305,68 @@ class _HomeScreenState extends State<HomeScreen> {
       });
     }
   }
+
+  Widget buildGroupList(String currentUid) {
+    return Stack(
+      children: [
+        StreamBuilder(
+          stream: groups.getGroups(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            } else if (snapshot.hasError) {
+              return const Text("Error al obtener datos");
+            } else if (snapshot.hasData) {
+              if (snapshot.data!.docs.isEmpty) {
+                return Center(
+                  child: Text(
+                    "No tienes grupos aún",
+                    style: GoogleFonts.poppins(
+                      fontSize: 16,
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                );
+              } else {
+                return ListView.builder(
+                  itemCount: snapshot.data!.docs.length,
+                  itemBuilder: (context, index) {
+                    Map<String, dynamic> groupData = snapshot.data!.docs[index]
+                        .data() as Map<String, dynamic>;
+                    List<dynamic> members = groupData['members'];
+                    if (groupData['admin'] == currentUid ||
+                        members.any((member) => member['uid'] == currentUid)) {
+                      return GroupsWidget(
+                          groupData: snapshot.data!.docs[index]);
+                    } else {
+                      return SizedBox.shrink();
+                    }
+                  },
+                );
+              }
+            } else {
+              return const Text("No hay datos disponibles");
+            }
+          },
+        ),
+        Align(
+          alignment: Alignment.bottomRight,
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: FloatingActionButton(
+              onPressed: () {
+                _navigationService.push(
+                  MaterialPageRoute(builder: (context) => AddGroupScreen()),
+                );
+              },
+              child: Icon(Icons.add),
+              backgroundColor: const Color.fromRGBO(17, 117, 51, 51),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
 }
+

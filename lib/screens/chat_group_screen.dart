@@ -453,7 +453,7 @@ class _ConversationGroupsScreenState extends State<ConversationGroupsScreen> {
               }
             },
             itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
-              PopupMenuItem<String>(
+              /*PopupMenuItem<String>(
                 value: 'ver_miembros',
                 child: ListTile(
                   leading: const Icon(
@@ -465,7 +465,7 @@ class _ConversationGroupsScreenState extends State<ConversationGroupsScreen> {
                     style: GoogleFonts.poppins(color: Colors.white),
                   ),
                 ),
-              ),
+              ),*/
               PopupMenuItem<String>(
                 value: 'add_miembros',
                 child: ListTile(

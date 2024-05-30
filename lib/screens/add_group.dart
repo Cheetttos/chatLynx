@@ -40,7 +40,6 @@ class _AddGroupScreenState extends State<AddGroupScreen> {
     List<Map<String, dynamic>> contacts =
         await _usersFirestore.obtenerContactosDisponibles(userId);
 
-    print('DebugeandoOOOOOOOOOOOOOOOOOOOOOOOO');
     contacts.forEach(
       (element) {
         print(element.toString());
